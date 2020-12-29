@@ -8,21 +8,29 @@ const migrations = {
 
 module.exports = {
   development: {
-    client: 'sqlite3',
+    client: 'pg',
     connection: {
-      filename: './database.sqlite',
+      host: '127.0.0.1',
+      user: 'postgres',
+      password: 'postgres',
+      database: 'project-lvl-4-dev',
     },
     useNullAsDefault: true,
     migrations,
   },
   test: {
-    client: 'sqlite3',
-    connection: ':memory:',
+    client: 'pg',
+    connection: {
+      host: '127.0.0.1',
+      user: 'postgres',
+      password: 'postgres',
+      database: 'project-lvl-4-test',
+    },
     useNullAsDefault: true,
     migrations,
   },
   production: {
-    client: 'sqlite3',
+    client: 'pg',
     connection: {
       filename: './database.sqlite',
     },
