@@ -8,29 +8,21 @@ const migrations = {
 
 module.exports = {
   development: {
-    client: 'pg',
+    client: 'sqlite3',
     connection: {
-      host: '127.0.0.1',
-      user: 'postgres',
-      password: 'postgres',
-      database: 'project-lvl-4-dev',
+      filename: './database.sqlite',
     },
     useNullAsDefault: true,
     migrations,
   },
   test: {
-    client: 'pg',
-    connection: {
-      host: '127.0.0.1',
-      user: 'postgres',
-      password: 'postgres',
-      database: 'project-lvl-4-test',
-    },
+    client: 'sqlite3',
+    connection: ':memory:',
     useNullAsDefault: true,
     migrations,
   },
   production: {
-    client: 'pg',
+    client: 'sqlite3',
     connection: {
       filename: './database.sqlite',
     },
@@ -38,3 +30,35 @@ module.exports = {
     migrations,
   },
 };
+// module.exports = {
+//   development: {
+//     client: 'pg',
+//     connection: {
+//       host: '127.0.0.1',
+//       user: 'postgres',
+//       password: 'postgres',
+//       database: 'project-lvl-4-dev',
+//     },
+//     useNullAsDefault: true,
+//     migrations,
+//   },
+//   test: {
+//     client: 'pg',
+//     connection: {
+//       host: '127.0.0.1',
+//       user: 'postgres',
+//       password: 'postgres',
+//       database: 'project-lvl-4-test',
+//     },
+//     useNullAsDefault: true,
+//     migrations,
+//   },
+//   production: {
+//     client: 'pg',
+//     connection: {
+//       filename: './database.sqlite',
+//     },
+//     useNullAsDefault: true,
+//     migrations,
+//   },
+// };
