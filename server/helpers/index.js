@@ -9,6 +9,7 @@ export default (app) => ({
     return i18next.t(key);
   },
   _,
+  i18next,
   getAlertClass(type) {
     switch (type) {
       // case 'failure':

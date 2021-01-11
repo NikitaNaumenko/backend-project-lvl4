@@ -1,6 +1,6 @@
 module.exports = {
   translation: {
-    appName: 'Fastify Шаблон',
+    appName: 'Backend Project level 4',
     flash: {
       session: {
         create: {
