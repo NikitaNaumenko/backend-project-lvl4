@@ -22,9 +22,12 @@ module.exports = {
     migrations,
   },
   production: {
-    client: 'sqlite3',
+    client: 'pg',
     connection: {
-      filename: './database.sqlite',
+      host: process.env.DATABASE_URL,
+      user: 'postgres',
+      password: 'postgres',
+      database: 'project-lvl-4-test',
     },
     useNullAsDefault: true,
     migrations,
