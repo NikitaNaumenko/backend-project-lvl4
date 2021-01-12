@@ -23,12 +23,7 @@ module.exports = {
   },
   production: {
     client: 'pg',
-    connection: {
-      host: process.env.DATABASE_URL,
-      user: 'postgres',
-      password: 'postgres',
-      database: 'project-lvl-4-test',
-    },
+    connection: process.env.DATABASE_URL,
     useNullAsDefault: true,
     migrations,
   },
