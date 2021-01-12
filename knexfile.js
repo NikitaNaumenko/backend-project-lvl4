@@ -23,6 +23,7 @@ module.exports = {
   },
   production: {
     client: 'pg',
+    ssl: false,
     connection: process.env.DATABASE_URL,
     useNullAsDefault: true,
     migrations,
