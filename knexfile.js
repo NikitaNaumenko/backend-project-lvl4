@@ -16,7 +16,7 @@ module.exports = {
     // useNullAsDefault: true,
     // migrations,
     client: 'pg',
-    connection: `${process.env.DATABASE_URL}?ssl=true`,
+    connection: process.env.DATABASE_URL,
     useNullAsDefault: true,
     migrations,
   },
@@ -29,7 +29,7 @@ module.exports = {
   production: {
     client: 'pg',
     ssl: true,
-    connection: process.env.DATABASE_URL,
+    connection: `${process.env.DATABASE_URL}?ssl=true`,
     useNullAsDefault: true,
     migrations,
   },
