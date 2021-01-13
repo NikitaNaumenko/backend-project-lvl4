@@ -9,14 +9,14 @@ const migrations = {
 console.log(process.env.DATABASE_URL);
 module.exports = {
   development: {
-    // client: 'sqlite3',
-    // connection: {
-    //   filename: './database.sqlite',
-    // },
-    // useNullAsDefault: true,
-    // migrations,
     client: 'pg',
-    connection: process.env.DATABASE_URL,
+    connection: {
+      host: '0.0.0.0',
+      port: '5432',
+      user: 'postgres',
+      password: 'postgres',
+      database: 'project-lvl-4-dev',
+    },
     useNullAsDefault: true,
     migrations,
   },
@@ -28,14 +28,12 @@ module.exports = {
   },
   production: {
     client: 'pg',
-    // connection: process.env.DATABASE_URL,
     connection: {
       host: process.env.DATABASE_HOST,
       port: process.env.DATABASE_PORT,
       user: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      ssl: true
     },
     useNullAsDefault: true,
     migrations,
