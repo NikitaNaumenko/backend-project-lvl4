@@ -29,40 +29,8 @@ module.exports = {
   production: {
     client: 'pg',
     ssl: true,
-    connection: `${process.env.DATABASE_URL}?ssl=true`,
+    connection: process.env.DATABASE_URL,
     useNullAsDefault: true,
     migrations,
   },
 };
-// module.exports = {
-//   development: {
-//     client: 'pg',
-//     connection: {
-//       host: '127.0.0.1',
-//       user: 'postgres',
-//       password: 'postgres',
-//       database: 'project-lvl-4-dev',
-//     },
-//     useNullAsDefault: true,
-//     migrations,
-//   },
-//   test: {
-//     client: 'pg',
-//     connection: {
-//       host: '127.0.0.1',
-//       user: 'postgres',
-//       password: 'postgres',
-//       database: 'project-lvl-4-test',
-//     },
-//     useNullAsDefault: true,
-//     migrations,
-//   },
-//   production: {
-//     client: 'pg',
-//     connection: {
-//       filename: './database.sqlite',
-//     },
-//     useNullAsDefault: true,
-//     migrations,
-//   },
-// };
