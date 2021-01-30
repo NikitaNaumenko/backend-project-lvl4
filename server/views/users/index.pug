@@ -1,0 +1,14 @@
+extends ../layouts/application.pug
+
+block content
+  table.table
+    thead
+      tr
+        th(scope="col")= t('views.users.id')
+        th(scope="col")= t('views.users.email')
+    tbody
+      each user in users
+        tr
+          th(scope="col")= user.id
+          th(scope="col")= user.email
+

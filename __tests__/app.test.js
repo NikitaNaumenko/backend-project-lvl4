@@ -20,6 +20,18 @@ describe('requests', () => {
     expect(res.statusCode).toBe(200);
   });
 
+  it('users GET 200', async () => {
+    let knex = app.objection.knex;
+    await knex.migrate.latest();
+
+    const res = await app.inject({
+      method: 'GET',
+      url: app.reverse('users'),
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
   it('GET 404', async () => {
     const res = await app.inject({
       method: 'GET',

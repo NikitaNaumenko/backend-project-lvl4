@@ -6,7 +6,6 @@ const migrations = {
   directory: path.join(__dirname, 'server', 'migrations'),
 };
 
-console.log(process.env.DATABASE_URL);
 module.exports = {
   development: {
     client: 'pg',
