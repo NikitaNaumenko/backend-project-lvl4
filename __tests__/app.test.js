@@ -1,8 +1,6 @@
-// @ts-check
-
-import {
-  describe, beforeAll, it, expect,
-} from '@jest/globals';
+// import {
+//   describe, beforeAll, it, expect,
+// } from '@jest/globals';
 import getApp from '../server/index.js';
 
 describe('requests', () => {
@@ -17,18 +15,6 @@ describe('requests', () => {
       method: 'GET',
       url: app.reverse('root'),
     });
-    expect(res.statusCode).toBe(200);
-  });
-
-  it('users GET 200', async () => {
-    let knex = app.objection.knex;
-    await knex.migrate.latest();
-
-    const res = await app.inject({
-      method: 'GET',
-      url: app.reverse('users'),
-    });
-
     expect(res.statusCode).toBe(200);
   });
 
