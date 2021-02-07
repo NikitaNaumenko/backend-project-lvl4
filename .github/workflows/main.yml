@@ -17,9 +17,9 @@ jobs:
           node-version: '14.x'
       - name: npm install, build
         run: |
-          make setup
-          make build
+          NODE_ENV=test make setup
+          NODE_ENV=test make build
       - name: Run linter
-        run: make lint
+        run: NODE_ENV=test make lint
       - name: Run tests
-        run: make test
+        run: NODE_ENV=test make test
