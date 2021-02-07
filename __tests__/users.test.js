@@ -1,5 +1,8 @@
 import getApp from '../server/index.js';
 import { getTestData, prepareData } from './helpers/index.js';
+import encrypt from '../server/lib/secure.js';
+import { omit } from 'lodash';
+
 
 describe('test users CRUD', () => {
   let app;
@@ -45,5 +48,24 @@ describe('test users CRUD', () => {
     });
 
     expect(res.statusCode).toBe(200);
+  });
+
+  it('create', async () => {
+    const params = testData.users.new;
+    const response = await app.inject({
+      method: 'POST',
+      url: app.reverse('users'),
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(response.statusCode).toBe(302);
+    const expected = {
+      ...omit(params, 'password'),
+      passwordDigest: encrypt(params.password),
+    };
+    const user = await models.user.query().findOne({ email: params.email });
+    expect(user).toMatchObject(expected);
   });
 });
