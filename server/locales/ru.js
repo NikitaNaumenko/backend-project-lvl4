@@ -1,5 +1,13 @@
 module.exports = {
   translation: {
+    entities: {
+      user: {
+        id: 'ID',
+        email: 'Email',
+        createdAt: 'Дата создания',
+        password: 'Пароль',
+      },
+    },
     appName: 'Backend Project level 4',
     flash: {
       session: {

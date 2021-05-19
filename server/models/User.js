@@ -11,17 +11,22 @@ export default class User extends unique(Model) {
   static get tableName() {
     return 'users';
   }
-
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['email', 'password'],
+      required: ['email', 'password', 'firstName', 'lastName'],
       properties: {
         id: { type: 'integer' },
+        firstName: { type: 'string', minLength: 1 },
+        lastName: { type: 'string', minLength: 1 },
         email: { type: 'string', format: 'email' },
         password: { type: 'string', minLength: 3 },
       },
     };
+  }
+
+  entityName() {
+    return 'user'
   }
 
   set password(value) {
