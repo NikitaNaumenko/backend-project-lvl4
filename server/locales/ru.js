@@ -38,6 +38,7 @@ module.exports = {
         id: 'ID',
         email: 'Email',
         createdAt: 'Дата создания',
+        password: 'Пароль',
         new: {
           submit: 'Сохранить',
           signUp: 'Регистрация',
