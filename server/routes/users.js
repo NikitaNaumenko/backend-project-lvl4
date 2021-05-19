@@ -1,6 +1,7 @@
 // @ts-check
 
 import i18next from 'i18next';
+import UserPolicy from '../policies/user_policy.js';
 
 export default (app) => {
   app
@@ -12,11 +13,19 @@ export default (app) => {
       const user = await new app.objection.models.user();
       reply.render('users/new', { user });
     })
-    .get('/users/:id/edit', { name: 'editUser' }, async (req, reply) => {
+    .get('/users/:id/edit', { name: 'editUser' }, async (req, reply, err, userr) => {
       const { id } = req.params;
       const user = await app.objection.models.user.query().findById(id);
 
-      reply.render('users/edit', { user });
+      const policy = new UserPolicy(req.user, user)
+
+      if (policy.canEdit()) {
+        reply.render('users/edit', { user });
+      }
+      else {
+        req.flash('error', i18next.t('flash.users.edit.notAllowed'));
+        reply.redirect(app.reverse('root'));
+      }
     })
     .post('/users', async (req, reply) => {
       try {

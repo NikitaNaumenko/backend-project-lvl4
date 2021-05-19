@@ -15,7 +15,7 @@ html(lang=i18next.language)
       .collapse.navbar-collapse
         ul.navbar-nav.mr-auto
           li.nav-item
-            a.nav-link(href='#')= t('layouts.application.users')
+            a.nav-link(href=route('users'))= t('layouts.application.users')
         ul.navbar-nav
           if isAuthenticated()
             li.nav-item
@@ -26,6 +26,10 @@ html(lang=i18next.language)
             li.nav-item
               a.nav-link(href=route('newUser'))= t('layouts.application.signUp')
     .container.wrapper.flex-grow-1
+      each messages, type in reply.flash() || []
+        each message in messages
+          div.alert(class=`alert-${getAlertClass(type)}`)= message
+
       h1.my-4
         block header
       block content
