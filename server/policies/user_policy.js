@@ -8,4 +8,8 @@ export default class UserPolicy {
   canEdit() {
     return _.isEqual(this.user, this.record);
   }
+
+  canUpdate() {
+    return _.isEqual(this.user, this.record);
+  }
 }
