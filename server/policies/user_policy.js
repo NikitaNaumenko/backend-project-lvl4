@@ -12,4 +12,8 @@ export default class UserPolicy {
   canUpdate() {
     return _.isEqual(this.user, this.record);
   }
+
+  canDelete() {
+    return _.isEqual(this.user, this.record);
+  }
 }
