@@ -79,6 +79,65 @@ describe('test users CRUD', () => {
     expect(res.statusCode).toBe(302);
   });
 
+  it('update when authorized', async () => {
+    const testuser = generateUser();
+    await insertUser(app, testuser);
+    const user = await models.user.query().findOne({ email: testuser.email });
+    const cookie = await auth(app, user);
+    const params = generateUser();
+    const res = await app.inject({
+      method: 'PATCH',
+      url: app.reverse('updateUser', { id: user.id.toString() }),
+      cookies: cookie,
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(res.statusCode).toBe(302);
+  });
+
+  it('update when not authorized', async () => {
+    const testuser = generateUser();
+    await insertUser(app, testuser);
+    const user = await models.user.query().findOne({ email: testuser.email });
+
+    let editedUser = generateUser();
+    await insertUser(app, editedUser);
+    editedUser= await models.user.query().findOne({ email: editedUser.email });
+
+    const cookie = await auth(app, user);
+    const params = generateUser();
+    const res = await app.inject({
+      method: 'PATCH',
+      url: app.reverse('updateUser', { id: editedUser.id.toString() }),
+      cookies: cookie,
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(res.statusCode).toBe(302);
+  });
+
+  it('update when not authorized', async () => {
+    const testuser = generateUser();
+    await insertUser(app, testuser);
+    const user = await models.user.query().findOne({ email: testuser.email });
+
+    const params = generateUser();
+    const res = await app.inject({
+      method: 'PATCH',
+      url: app.reverse('updateUser', { id: user.id.toString() }),
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(res.statusCode).toBe(302);
+  });
+
+
   it('create', async () => {
     const params = generateUser();
     const response = await app.inject({
