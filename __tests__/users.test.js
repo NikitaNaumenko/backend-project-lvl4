@@ -54,7 +54,7 @@ describe('test users CRUD', () => {
 
     let editedUser = generateUser();
     await insertUser(app, editedUser);
-    editedUser= await models.user.query().findOne({ email: editedUser.email });
+    editedUser = await models.user.query().findOne({ email: editedUser.email });
 
     const cookie = await auth(app, user);
     const res = await app.inject({
@@ -66,7 +66,7 @@ describe('test users CRUD', () => {
     expect(res.statusCode).toBe(302);
   });
 
-  it('edit when not authorized', async () => {
+  it('edit when not authenticated', async () => {
     const testuser = generateUser();
     await insertUser(app, testuser);
     const user = await models.user.query().findOne({ email: testuser.email });
@@ -104,7 +104,7 @@ describe('test users CRUD', () => {
 
     let editedUser = generateUser();
     await insertUser(app, editedUser);
-    editedUser= await models.user.query().findOne({ email: editedUser.email });
+    editedUser = await models.user.query().findOne({ email: editedUser.email });
 
     const cookie = await auth(app, user);
     const params = generateUser();
@@ -120,7 +120,7 @@ describe('test users CRUD', () => {
     expect(res.statusCode).toBe(302);
   });
 
-  it('update when not authorized', async () => {
+  it('update when not authenticated', async () => {
     const testuser = generateUser();
     await insertUser(app, testuser);
     const user = await models.user.query().findOne({ email: testuser.email });
@@ -136,7 +136,6 @@ describe('test users CRUD', () => {
 
     expect(res.statusCode).toBe(302);
   });
-
 
   it('create', async () => {
     const params = generateUser();

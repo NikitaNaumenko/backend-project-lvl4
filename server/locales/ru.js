@@ -6,6 +6,8 @@ module.exports = {
         email: 'Email',
         createdAt: 'Дата создания',
         password: 'Пароль',
+        firstName: 'Имя',
+        lastName: 'Фамилия',
       },
     },
     appName: 'Backend Project level 4',
@@ -54,6 +56,9 @@ module.exports = {
         new: {
           submit: 'Сохранить',
           signUp: 'Регистрация',
+        },
+        index: {
+          edit: 'Редактировать',
         },
       },
       welcome: {

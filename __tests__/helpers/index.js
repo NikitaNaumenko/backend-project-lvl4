@@ -2,7 +2,7 @@
 
 // import fs from 'fs';
 // import path from 'path';
-import faker from 'faker'
+import faker from 'faker';
 
 export const generateUser = () => ({
   firstName: faker.name.firstName(),

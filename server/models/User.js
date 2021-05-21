@@ -26,10 +26,6 @@ export default class User extends unique(Model) {
     };
   }
 
-  entityName() {
-    return 'user';
-  }
-
   set password(value) {
     this.passwordDigest = encrypt(value);
   }

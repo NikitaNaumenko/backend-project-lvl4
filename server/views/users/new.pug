@@ -2,9 +2,9 @@ extends ../layouts/application.pug
 
 block content
   +formFor()(action=route('users') method='post')
-    +input(user, 'email', errors)(type="text")
-    +input(user, 'password', errors)(type="password")
-    +input(user, 'firstName', errors)(type="text")
-    +input(user, 'lastName', errors)(type="text")
+    +input(user, 'email', t('entities.user.email'), errors)(type="text")
+    +input(user, 'password', t('entities.user.password'), errors)(type="password")
+    +input(user, 'firstName', t('entities.user.firstName'), errors)(type="text")
+    +input(user, 'lastName', t('entities.user.lastName'), errors)(type="text")
     +submit(user)(value=t('views.users.new.submit'))
 

@@ -6,9 +6,12 @@ block content
       tr
         th(scope="col")= t('views.users.id')
         th(scope="col")= t('views.users.email')
+        th(scope="col")
     tbody
       each user in users
         tr
           th(scope="col")= user.id
           th(scope="col")= user.email
+          th(scope="col")
+            a.nav-link(href=route('editUser', { id: user.id }))= t('views.users.index.edit')
 
