@@ -1,5 +1,5 @@
 import getApp from '../server/index.js';
-import { getTestData, prepareData } from './helpers/index.js';
+import { getTestData, prepareData, auth } from './helpers/index.js';
 import encrypt from '../server/lib/secure.js';
 import { omit } from 'lodash';
 
@@ -42,9 +42,12 @@ describe('test users CRUD', () => {
 
   it('edit', async () => {
     const user = await models.user.query().findOne({ email: testData.users.existing.email });
+
+    const cookie = await auth(app, testData.users.existing)
     const res = await app.inject({
       method: 'GET',
       url: app.reverse('editUser', { id: user.id.toString() }),
+      cookies: cookie,
     });
 
     expect(res.statusCode).toBe(200);
