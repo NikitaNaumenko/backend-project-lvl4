@@ -6,10 +6,12 @@ export default (app) => {
     .get('/users', { name: 'users' }, async (_, reply) => {
       const users = await app.objection.models.user.query();
       reply.render('users/index', { users });
+      return reply;
     })
     .get('/users/new', { name: 'newUser' }, async (_, reply) => {
       const user = await new app.objection.models.user();
       reply.render('users/new', { user });
+      return reply;
     })
     .post('/users', async (req, reply) => {
       try {
@@ -34,15 +36,15 @@ export default (app) => {
       const { id } = req.params;
       const user = await app.objection.models.user.query().findById(id);
 
-      const policy = new UserPolicy(req.user, user)
+      const policy = new UserPolicy(req.user, user);
 
       if (policy.canEdit()) {
         reply.render('users/edit', { user });
+        return reply;
       }
-      else {
-        req.flash('error', i18next.t('flash.users.edit.notAllowed'));
-        reply.redirect(app.reverse('root'));
-      }
+      req.flash('error', i18next.t('flash.users.edit.notAllowed'));
+      reply.redirect(app.reverse('root'));
+      return reply;
     })
     .patch('/users/:id', { name: 'updateUser' }, async (req, reply) => {
       if (!req.isAuthenticated()) {
@@ -54,7 +56,7 @@ export default (app) => {
       const { id } = req.params;
       const user = await app.objection.models.user.query().findById(id);
 
-      const policy = new UserPolicy(req.user, user)
+      const policy = new UserPolicy(req.user, user);
 
       if (!policy.canUpdate()) {
         req.flash('error', i18next.t('flash.users.edit.notAllowed'));
@@ -64,7 +66,10 @@ export default (app) => {
       try {
         const patchForm = await app.objection.models.user.fromJson(req.body.data);
         await user.$query().patch(patchForm);
-      } catch({ data }) {
+        req.flash('error', i18next.t('flash.users.edit.success'));
+        reply.redirect(app.reverse('users'));
+        return reply;
+      } catch ({ data }) {
         req.flash('error', i18next.t('flash.users.edit.error'));
         req.body.data.id = id;
         reply.render('users/edit', { user: req.body.data, errors: data });
@@ -80,7 +85,7 @@ export default (app) => {
       const { id } = req.params;
       const user = await app.objection.models.user.query().findById(id);
 
-      const policy = new UserPolicy(req.user, user)
+      const policy = new UserPolicy(req.user, user);
 
       if (!policy.canDelete()) {
         req.flash('error', i18next.t('flash.users.edit.notAllowed'));
@@ -93,9 +98,11 @@ export default (app) => {
         req.logOut();
         req.flash('info', i18next.t('flash.users.delete.success'));
         reply.redirect(app.reverse('users'));
+        return reply;
       } catch (error) {
         req.flash('error', i18next.t('flash.users.delete.error'));
         reply.redirect(app.reverse('users'));
+        return reply;
       }
-    })
+    });
 };

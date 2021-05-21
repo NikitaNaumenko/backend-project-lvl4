@@ -1,25 +1,18 @@
-import getApp from '../server/index.js';
-import { getTestData, prepareData, auth } from './helpers/index.js';
-import encrypt from '../server/lib/secure.js';
 import { omit } from 'lodash';
-
+import getApp from '../server/index.js';
+import { generateUser, insertUser, auth } from './helpers/index.js';
+import encrypt from '../server/lib/secure.js';
 
 describe('test users CRUD', () => {
   let app;
   let knex;
   let models;
-  let testData;
 
   beforeAll(async () => {
     app = await getApp();
     knex = app.objection.knex;
     models = app.objection.models;
-    testData = getTestData();
-  });
-
-  beforeEach(async () => {
     await knex.migrate.latest();
-    prepareData(app);
   });
 
   it('index', async () => {
@@ -40,10 +33,11 @@ describe('test users CRUD', () => {
     expect(res.statusCode).toBe(200);
   });
 
-  it('edit', async () => {
-    const user = await models.user.query().findOne({ email: testData.users.existing.email });
-
-    const cookie = await auth(app, testData.users.existing)
+  it('edit when authorized', async () => {
+    const testuser = generateUser();
+    await insertUser(app, testuser);
+    const user = await models.user.query().findOne({ email: testuser.email });
+    const cookie = await auth(app, user);
     const res = await app.inject({
       method: 'GET',
       url: app.reverse('editUser', { id: user.id.toString() }),
@@ -53,8 +47,40 @@ describe('test users CRUD', () => {
     expect(res.statusCode).toBe(200);
   });
 
+  it('edit when not authorized', async () => {
+    const testuser = generateUser();
+    await insertUser(app, testuser);
+    const user = await models.user.query().findOne({ email: testuser.email });
+
+    let editedUser = generateUser();
+    await insertUser(app, editedUser);
+    editedUser= await models.user.query().findOne({ email: editedUser.email });
+
+    const cookie = await auth(app, user);
+    const res = await app.inject({
+      method: 'GET',
+      url: app.reverse('editUser', { id: editedUser.id.toString() }),
+      cookies: cookie,
+    });
+
+    expect(res.statusCode).toBe(302);
+  });
+
+  it('edit when not authorized', async () => {
+    const testuser = generateUser();
+    await insertUser(app, testuser);
+    const user = await models.user.query().findOne({ email: testuser.email });
+
+    const res = await app.inject({
+      method: 'GET',
+      url: app.reverse('editUser', { id: user.id.toString() }),
+    });
+
+    expect(res.statusCode).toBe(302);
+  });
+
   it('create', async () => {
-    const params = testData.users.new;
+    const params = generateUser();
     const response = await app.inject({
       method: 'POST',
       url: app.reverse('users'),
@@ -68,7 +94,12 @@ describe('test users CRUD', () => {
       ...omit(params, 'password'),
       passwordDigest: encrypt(params.password),
     };
-    const user = await models.user.query().findOne({ email: params.email });
-    expect(user).toMatchObject(expected);
+    const createdUser = await models.user.query().findOne({ email: params.email });
+    expect(createdUser).toMatchObject(expected);
+  });
+
+  afterAll(async () => {
+    await knex.migrate.rollback();
+    app.close();
   });
 });

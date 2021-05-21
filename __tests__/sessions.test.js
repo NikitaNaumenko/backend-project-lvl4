@@ -1,19 +1,18 @@
 // @ts-check
 
 import getApp from '../server/index.js';
-import { getTestData, prepareData, auth } from './helpers/index.js';
+import { generateUser, insertUser, auth } from './helpers/index.js';
 
 describe('test session', () => {
   let app;
   let knex;
-  let testData;
+  let models;
 
   beforeAll(async () => {
     app = await getApp();
     knex = app.objection.knex;
+    models = app.objection.models;
     await knex.migrate.latest();
-    await prepareData(app);
-    testData = getTestData();
   });
 
   it('test sign in / sign out', async () => {
@@ -23,20 +22,12 @@ describe('test session', () => {
     });
 
     expect(response.statusCode).toBe(200);
-    const cookie = await auth(app, testData.users.existing);
 
-    // const responseSignIn = await app.inject({
-    //   method: 'POST',
-    //   url: app.reverse('session'),
-    //   payload: {
-    //     data: testData.users.existing,
-    //   },
-    // });
+    const testuser = generateUser();
+    await insertUser(app, testuser);
+    const user = await models.user.query().findOne({ email: testuser.email });
 
-    // expect(responseSignIn.statusCode).toBe(302);
-    // const [sessionCookie] = responseSignIn.cookies;
-    // const { name, value } = sessionCookie;
-    // const cookie = { [name]: value };
+    const cookie = await auth(app, user);
 
     const responseSignOut = await app.inject({
       method: 'DELETE',

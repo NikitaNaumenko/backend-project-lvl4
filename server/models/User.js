@@ -11,6 +11,7 @@ export default class User extends unique(Model) {
   static get tableName() {
     return 'users';
   }
+
   static get jsonSchema() {
     return {
       type: 'object',
@@ -26,7 +27,7 @@ export default class User extends unique(Model) {
   }
 
   entityName() {
-    return 'user'
+    return 'user';
   }
 
   set password(value) {

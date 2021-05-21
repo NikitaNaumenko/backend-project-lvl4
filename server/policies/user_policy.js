@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 export default class UserPolicy {
   constructor(user, record) {
     this.user = user;
