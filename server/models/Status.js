@@ -15,4 +15,18 @@ export default class Status extends Model {
       },
     };
   }
+
+  static get relationMappings() {
+    const Task = require('./Task.js');
+    return {
+      tasks: {
+        relation: Model.HasManyRelation,
+        modelClass: Task,
+        join: {
+          from: 'statuses.id',
+          to: 'tasks.statusId',
+        },
+      },
+    };
+  }
 }

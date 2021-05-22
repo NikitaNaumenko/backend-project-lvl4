@@ -1,4 +1,6 @@
-import { auth, factories, launchApp, shutdownApp, databaseHelpers } from './helpers/index.js';
+import {
+  auth, factories, launchApp, shutdownApp, databaseHelpers,
+} from './helpers/index.js';
 
 describe('test CRUD', () => {
   let app;
@@ -14,7 +16,7 @@ describe('test CRUD', () => {
     const res = await app.inject({
       method: 'GET',
       url: app.reverse('statuses'),
-      cookies: cookie
+      cookies: cookie,
     });
 
     expect(res.statusCode).toBe(200);
@@ -81,7 +83,7 @@ describe('test CRUD', () => {
       method: 'DELETE',
       url: app.reverse('deleteStatus', { id: status.id }),
       cookies: cookie,
-    })
+    });
 
     expect(response.statusCode).toBe(302);
     const deletedStatus = await databaseHelpers(app).findOne.status({ id: status.id });
@@ -89,6 +91,6 @@ describe('test CRUD', () => {
   });
 
   afterAll(async () => {
-    await shutdownApp(app)
+    await shutdownApp(app);
   });
 });

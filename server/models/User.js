@@ -1,5 +1,3 @@
-// @ts-check
-
 import { Model } from 'objection';
 import objectionUnique from 'objection-unique';
 
@@ -32,5 +30,28 @@ export default class User extends unique(Model) {
 
   verifyPassword(password) {
     return encrypt(password) === this.passwordDigest;
+  }
+
+  static get relationMappings() {
+    const Task = require('./Task.js');
+
+    return {
+      tasks: {
+        relation: Model.HasManyRelation,
+        modelClass: Task,
+        join: {
+          from: 'users.id',
+          to: 'tasks.creatorId',
+        },
+      },
+      assignedTasks: {
+        relation: Model.HasManyRelation,
+        modelClass: Task,
+        join: {
+          from: 'users.id',
+          to: 'tasks.executorId',
+        },
+      },
+    };
   }
 }
