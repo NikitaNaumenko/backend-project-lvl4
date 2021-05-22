@@ -26,13 +26,7 @@ export default (app) => {
         return reply;
       }
     })
-    .get('/users/:id/edit', { name: 'editUser' }, async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('root'));
-        return reply;
-      }
-
+    .get('/users/:id/edit', { name: 'editUser', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const user = await app.objection.models.user.query().findById(id);
 
@@ -46,13 +40,7 @@ export default (app) => {
       reply.redirect(app.reverse('root'));
       return reply;
     })
-    .patch('/users/:id', { name: 'updateUser' }, async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('root'));
-        return reply;
-      }
-
+    .patch('/users/:id', { name: 'updateUser', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const user = await app.objection.models.user.query().findById(id);
 
@@ -76,12 +64,7 @@ export default (app) => {
         return reply;
       }
     })
-    .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('root'));
-        return reply;
-      }
+    .delete('/users/:id', { name: 'deleteUser', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const user = await app.objection.models.user.query().findById(id);
 

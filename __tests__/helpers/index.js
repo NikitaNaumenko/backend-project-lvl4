@@ -1,29 +1,42 @@
-// @ts-check
+import factories from './factories.js';
+import getApp from '../../server/index.js';
 
-// import fs from 'fs';
-// import path from 'path';
-import faker from 'faker';
+export { factories };
+export const launchApp = async () => {
+  const app = await getApp();
+  await app.objection.knex.migrate.latest();
+  return app;
+};
 
-export const generateUser = () => ({
-  firstName: faker.name.firstName(),
-  lastName: faker.name.lastName(),
-  email: faker.internet.email(),
-  password: 'password',
+export const shutdownApp = async (app) => {
+  await app.close();
+  await app.objection.knex.rollback();
+};
+
+export const databaseHelpers = (app) => ({
+  insert: {
+    user: (data) => app.objection.models.user.query().insert(data),
+    status: app.objection.models.user.query(),
+  },
+  findOne: {
+    user: (data) => app.objection.models.user.query().findOne(data),
+  },
 });
 
-export const insertUser = (app, form) => app.objection.models.user.query().insert(form);
+export const auth = async (app) => {
+  const userData = factories.user();
+  const user = await databaseHelpers(app).insert.user(userData);
 
-export const auth = async (app, user) => {
   const responseSignIn = await app.inject({
     method: 'POST',
     url: app.reverse('session'),
-    payload: {
-      data: { email: user.email, password: 'password' },
+    body: {
+      data: { email: userData.email, password: userData.password },
     },
   });
 
   const [sessionCookie] = responseSignIn.cookies;
   const { name, value } = sessionCookie;
   const cookie = { [name]: value };
-  return cookie;
+  return { user, cookie };
 };
