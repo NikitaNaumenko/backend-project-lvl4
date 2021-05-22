@@ -1,18 +1,10 @@
-// @ts-check
-
-import getApp from '../server/index.js';
-import { auth } from './helpers/index.js';
+import { auth, launchApp, shutdownApp } from './helpers/index.js';
 
 describe('test session', () => {
   let app;
-  let knex;
-  let models;
 
   beforeAll(async () => {
-    app = await getApp();
-    knex = app.objection.knex;
-    models = app.objection.models;
-    await knex.migrate.latest();
+    app = await launchApp();
   });
 
   it('test sign in / sign out', async () => {
@@ -23,11 +15,7 @@ describe('test session', () => {
 
     expect(response.statusCode).toBe(200);
 
-    const testuser = generateUser();
-    await insertUser(app, testuser);
-    const user = await models.user.query().findOne({ email: testuser.email });
-
-    const cookie = await auth(app, user);
+    const { cookie } = await auth(app);
 
     const responseSignOut = await app.inject({
       method: 'DELETE',
@@ -39,7 +27,6 @@ describe('test session', () => {
   });
 
   afterAll(async () => {
-    await knex.migrate.rollback();
-    app.close();
+    await shutdownApp(app);
   });
 });

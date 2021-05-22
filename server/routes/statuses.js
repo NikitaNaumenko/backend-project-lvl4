@@ -49,7 +49,7 @@ export default (app) => {
         return reply;
       }
     })
-    .delete('/statuses/:id', { name: 'deleteStatuses', preValidation: app.authenticate }, async (req, reply) => {
+    .delete('/statuses/:id', { name: 'deleteStatus', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
 
       try {
