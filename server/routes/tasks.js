@@ -52,8 +52,8 @@ export default (app) => {
 
       try {
         const reqData = _.merge(req.body.data, { creatorId: req.user.id })
-        // const formData = await app.objection.models.task.fromJson(reqData);
-        await task.$query().patch({ ...req.body.data });
+        const formData = await app.objection.models.task.fromJson(reqData, { patch: true });
+        await task.$query().patch(formData);
         req.flash('error', i18next.t('flash.tasks.edit.success'));
         reply.redirect(app.reverse('tasks'));
         return reply;
