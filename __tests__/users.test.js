@@ -70,7 +70,7 @@ describe('test users CRUD', () => {
     let user;
     let cookie;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       const result = await auth(app);
       cookie = result.cookie;
       user = result.user;
@@ -124,6 +124,33 @@ describe('test users CRUD', () => {
       });
 
       expect(res.statusCode).toBe(302);
+    });
+
+    it('delete when authorized', async () => {
+       const res = await app.inject({
+        method: 'DELETE',
+        url: app.reverse('deleteUser', { id: user.id }),
+        cookies: cookie,
+      });
+
+      expect(res.statusCode).toBe(302);
+    });
+
+    it('delete with tasks', async () => {
+      const statusData = factories.status();
+      const status = await databaseHelpers(app).insert.status(statusData);
+      const taskData = factories.task({ creatorId: user.id, statusId: status.id });
+      await databaseHelpers(app).insert.task(taskData);
+
+       const res = await app.inject({
+        method: 'DELETE',
+        url: app.reverse('deleteUser', { id: user.id }),
+        cookies: cookie,
+      });
+      expect(res.statusCode).toBe(302);
+
+      const deletedUser = await databaseHelpers(app).findOne.user({ id: user.id });
+      expect(deletedUser).not.toBeUndefined();
     });
   });
 });
