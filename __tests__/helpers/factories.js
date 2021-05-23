@@ -9,4 +9,5 @@ export default {
     email: faker.internet.email(),
     password: faker.internet.password(),
   }, { ...data })),
+  task: (data = {}) => (_.merge({ name: faker.name.title() }, { ...data }))
 };

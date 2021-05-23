@@ -2,6 +2,8 @@
 
 const path = require('path');
 
+const { knexSnakeCaseMappers } = require('objection');
+
 const migrations = {
   directory: path.join(__dirname, 'server', 'migrations'),
 };
@@ -44,4 +46,6 @@ module.exports = {
     useNullAsDefault: true,
     migrations,
   },
+    ...knexSnakeCaseMappers()
+
 };
