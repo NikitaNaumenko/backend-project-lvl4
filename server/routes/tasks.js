@@ -3,9 +3,8 @@ import _ from 'lodash';
 
 export default (app) => {
   app
-    .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (_, reply) => {
+    .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (_req, reply) => {
       const tasks = await app.objection.models.task.query().withGraphJoined('[creator, executor, status]');
-      console.log(tasks)
       reply.render('tasks/index', { tasks });
       return reply;
     })
@@ -16,7 +15,7 @@ export default (app) => {
       reply.render('task/show', { task });
       return reply;
     })
-    .get('/tasks/new', { name: 'newTask', preValidation: app.authenticate }, async (_, reply) => {
+    .get('/tasks/new', { name: 'newTask', preValidation: app.authenticate }, async (_req, reply) => {
       const task = await new app.objection.models.task();
       const statuses = await app.objection.models.status.query();
       const executors = await app.objection.models.user.query();
@@ -25,7 +24,7 @@ export default (app) => {
     })
     .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
       try {
-        const reqData = _.merge(req.body.data, { creatorId: req.user.id })
+        const reqData = _.merge(req.body.data, { creatorId: req.user.id });
         const formData = await app.objection.models.task.fromJson(reqData);
         await app.objection.models.task.query().insert(formData);
         req.flash('info', i18next.t('flash.task.create.success'));
@@ -48,17 +47,16 @@ export default (app) => {
     })
     .patch('/tasks/:id', { name: 'updateTask', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
-      const task= await app.objection.models.task.query().findById(id);
+      const task = await app.objection.models.task.query().findById(id);
 
       try {
-        const reqData = _.merge(req.body.data, { creatorId: req.user.id })
+        const reqData = _.merge(req.body.data, { creatorId: req.user.id });
         const formData = await app.objection.models.task.fromJson(reqData, { patch: true });
         await task.$query().patch(formData);
         req.flash('error', i18next.t('flash.tasks.edit.success'));
         reply.redirect(app.reverse('tasks'));
         return reply;
       } catch ({ data }) {
-        console.log(data)
         req.flash('error', i18next.t('flash.tasks.edit.error'));
         req.body.data.id = id;
         reply.render('tasks/edit', { task: req.body.data, errors: data });

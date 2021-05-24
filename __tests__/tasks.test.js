@@ -43,7 +43,6 @@ describe('test CRUD', () => {
     expect(res.statusCode).toBe(200);
   });
 
-
   it('new', async () => {
     const res = await app.inject({
       method: 'GET',

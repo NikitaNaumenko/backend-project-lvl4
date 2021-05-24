@@ -25,7 +25,7 @@ module.exports = {
       filename: './database.sqlite',
     },
     pool: {
-      afterCreate: (conn, cb) => conn.run("PRAGMA foreign_keys = ON", cb),
+      afterCreate: (conn, cb) => conn.run('PRAGMA foreign_keys = ON', cb),
     },
     useNullAsDefault: true,
     migrations,
@@ -34,7 +34,7 @@ module.exports = {
     client: 'sqlite3',
     connection: ':memory:',
     pool: {
-      afterCreate: (conn, cb) => conn.run("PRAGMA foreign_keys = ON", cb),
+      afterCreate: (conn, cb) => conn.run('PRAGMA foreign_keys = ON', cb),
     },
     useNullAsDefault: true,
     migrations,
@@ -52,6 +52,6 @@ module.exports = {
     useNullAsDefault: true,
     migrations,
   },
-    ...knexSnakeCaseMappers()
+  ...knexSnakeCaseMappers(),
 
 };

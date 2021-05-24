@@ -127,7 +127,7 @@ describe('test users CRUD', () => {
     });
 
     it('delete when authorized', async () => {
-       const res = await app.inject({
+      const res = await app.inject({
         method: 'DELETE',
         url: app.reverse('deleteUser', { id: user.id }),
         cookies: cookie,
@@ -142,7 +142,26 @@ describe('test users CRUD', () => {
       const taskData = factories.task({ creatorId: user.id, statusId: status.id });
       await databaseHelpers(app).insert.task(taskData);
 
-       const res = await app.inject({
+      const res = await app.inject({
+        method: 'DELETE',
+        url: app.reverse('deleteUser', { id: user.id }),
+        cookies: cookie,
+      });
+      expect(res.statusCode).toBe(302);
+
+      const deletedUser = await databaseHelpers(app).findOne.user({ id: user.id });
+      expect(deletedUser).not.toBeUndefined();
+    });
+
+    it('delete when executor', async () => {
+      const statusData = factories.status();
+      const status = await databaseHelpers(app).insert.status(statusData);
+      const userData = factories.user();
+      const creatorUser = await databaseHelpers(app).insert.user(userData);
+      const taskData = factories.task({ creatorId: creatorUser.id, statusId: status.id, executorId: user.id });
+      await databaseHelpers(app).insert.task(taskData);
+
+      const res = await app.inject({
         method: 'DELETE',
         url: app.reverse('deleteUser', { id: user.id }),
         cookies: cookie,
