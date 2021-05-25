@@ -1,6 +1,7 @@
 extends ../layouts/application.pug
 
 block content
+  a.nav-link(href=route('newTask'))= t('views.tasks.index.new')
   table.table
     thead
       tr
@@ -16,10 +17,10 @@ block content
           th(scope="col")= task.id
           th(scope="col")= task.name
           th(scope="col")= task.status.name
-          th(scope="col")= task.creator.name
-          th(scope="col")= task.executor.name
+          th(scope="col")= task.creator.fullName()
+          th(scope="col")= task.executor.fullName()
           th(scope="col")
-            a.nav-link(href=route('editTask', { id: task.id }))= t('views.tasks.index.edit')
-            +buttonTo(route('deleteTask', { id: task.id }), 'delete')(class="btn nav-link" value=t('views.tasks.index.delete'))
+            a(href=route('editTask', { id: task.id }))= t('views.tasks.index.edit')
+            +buttonTo(route('deleteTask', { id: task.id }), 'delete')(class="btn btn-link" value=t('views.tasks.index.delete'))
 
 

@@ -12,27 +12,43 @@ export default (app) => {
       const { id } = req.params;
       const task = await app.objection.models.task.query().findById(id);
 
-      reply.render('task/show', { task });
+      reply.render('tasks/show', { task });
       return reply;
     })
     .get('/tasks/new', { name: 'newTask', preValidation: app.authenticate }, async (_req, reply) => {
       const task = await new app.objection.models.task();
       const statuses = await app.objection.models.status.query();
       const executors = await app.objection.models.user.query();
-      reply.render('task/new', { task, statuses, executors });
+      reply.render('tasks/new', {
+        task,
+        statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
+        executors: executors.map((e) => ({ value: e.id, label: e.fullName() }))
+      });
       return reply;
     })
     .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
       try {
-        const reqData = _.merge(req.body.data, { creatorId: req.user.id });
+        // TODO: Type cohersion
+        const statusId = Number(req.body.data.statusId);
+        const executorId = Number(req.body.data.executorId);
+
+        const reqData = _.merge(req.body.data, { executorId, statusId, creatorId: req.user.id });
         const formData = await app.objection.models.task.fromJson(reqData);
         await app.objection.models.task.query().insert(formData);
-        req.flash('info', i18next.t('flash.task.create.success'));
-        reply.redirect(app.reverse('root'));
+        req.flash('info', i18next.t('flash.tasks.create.success'));
+        reply.redirect(app.reverse('tasks'));
         return reply;
       } catch ({ data }) {
-        req.flash('error', i18next.t('flash.task.create.error'));
-        reply.render('tasks/new', { task: req.body.data, errors: data });
+        const statuses = await app.objection.models.status.query();
+        const executors = await app.objection.models.user.query();
+
+        req.flash('error', i18next.t('flash.tasks.create.error'));
+        reply.render('tasks/new', {
+          task: req.body.data,
+          statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
+          executors: executors.map((e) => ({ value: e.id, label: e.fullName() })),
+          errors: data
+        });
         return reply;
       }
     })
@@ -42,7 +58,11 @@ export default (app) => {
       const statuses = await app.objection.models.status.query();
       const executors = await app.objection.models.user.query();
 
-      reply.render('tasks/edit', { task, statuses, executors });
+      reply.render('tasks/edit', {
+        task,
+        statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
+        executors: executors.map((e) => ({ value: e.id, label: e.fullName() })),
+      });
       return reply;
     })
     .patch('/tasks/:id', { name: 'updateTask', preValidation: app.authenticate }, async (req, reply) => {

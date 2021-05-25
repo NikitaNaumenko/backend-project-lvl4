@@ -28,6 +28,10 @@ export default class User extends unique(Model) {
     this.passwordDigest = encrypt(value);
   }
 
+  fullName() {
+    return [this.firstName, this.lastName].join(' ')
+  }
+
   verifyPassword(password) {
     return encrypt(password) === this.passwordDigest;
   }
