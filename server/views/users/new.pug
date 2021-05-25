@@ -1,5 +1,8 @@
 extends ../layouts/application.pug
 
+block header
+  = t('views.users.new.signUp')
+
 block content
   +formFor()(action=route('users') method='post')
     +input(user, 'email', t('entities.user.email'), errors)(type="text")

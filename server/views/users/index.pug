@@ -10,8 +10,9 @@ block content
     tbody
       each user in users
         tr
-          th(scope="col")= user.id
-          th(scope="col")= user.email
-          th(scope="col")
-            a.nav-link(href=route('editUser', { id: user.id }))= t('views.users.index.edit')
+          td(scope="col")= user.id
+          td(scope="col")= user.email
+          td(scope="col")
+            a(href=route('editUser', { id: user.id }))= t('views.users.index.edit')
+            +buttonTo(route('deleteUser', { id: user.id }), 'delete')(class="btn btn-link" value=t('views.users.index.delete'))
 

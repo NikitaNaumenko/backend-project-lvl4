@@ -36,8 +36,9 @@ export default (app) => {
         reply.render('users/edit', { user });
         return reply;
       }
+
       req.flash('error', i18next.t('flash.users.edit.notAllowed'));
-      reply.redirect(app.reverse('root'));
+      reply.redirect(app.reverse('users'));
       return reply;
     })
     .patch('/users/:id', { name: 'updateUser', preValidation: app.authenticate }, async (req, reply) => {

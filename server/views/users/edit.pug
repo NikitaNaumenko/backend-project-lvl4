@@ -1,5 +1,8 @@
 extends ../layouts/application.pug
 
+block header
+  = t('views.users.edit.header')
+
 block content
   +formFor()(action=route('updateUser', { id: user.id }) method='post')
     input(name="_method" type="hidden" value="patch")
@@ -7,4 +10,4 @@ block content
     +input(user, 'password', t('entities.user.password'), errors)(type="password")
     +input(user, 'firstName', t('entities.user.firstName'), errors)(type="text")
     +input(user, 'lastName', t('entities.user.lastName'), errors)(type="text")
-    +submit(user)(value=t('views.users.new.submit'))
+    +submit(user)(value=t('views.users.edit.submit'))

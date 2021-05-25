@@ -1,6 +1,7 @@
 extends ../layouts/application.pug
 
 block content
+  a.nav-link(href=route('newStatus'))= t('views.statuses.index.new')
   table.table
     thead
       tr
@@ -10,10 +11,10 @@ block content
     tbody
       each status in statuses
         tr
-          th(scope="col")= status.id
-          th(scope="col")= status.name
-          th(scope="col")
-            a.nav-link(href=route('editStatus', { id: status.id }))= t('views.statuses.index.edit')
-            +buttonTo(route('deleteStatus', 'delete'))(class="btn nav-link" value=t('views.statuses.index.delete'))
+          td(scope="col")= status.id
+          td(scope="col")= status.name
+          td(scope="col")
+            a(href=route('editStatus', { id: status.id }))= t('views.statuses.index.edit')
+            +buttonTo(route('deleteStatus', { id: status.id }), 'delete')(class="btn btn-link" value=t('views.statuses.index.delete'))
 
 

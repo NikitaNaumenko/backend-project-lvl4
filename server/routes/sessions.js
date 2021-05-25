@@ -11,16 +11,16 @@ export default (app) => {
     if (!user) {
       const signInForm = req.body.data;
       const errors = {
-        email: [{ message: i18next.t('flash.session.create.error') }],
+        email: [{ message: i18next.t('flash.sessions.create.error') }],
       };
       return reply.render('sessions/new', { signInForm, errors });
     }
     await req.logIn(user);
-    req.flash('success', i18next.t('flash.session.create.success'));
+    req.flash('success', i18next.t('flash.sessions.create.success'));
     return reply.redirect(app.reverse('root'));
   })).delete('/sessions', async (req, reply) => {
     await req.logOut();
-    req.flash('info', i18next.t('flash.session.delete.success'));
+    req.flash('info', i18next.t('flash.sessions.delete.success'));
     reply.redirect(app.reverse('root'));
   });
 };

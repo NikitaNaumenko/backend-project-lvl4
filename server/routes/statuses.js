@@ -17,7 +17,7 @@ export default (app) => {
         const formData = await app.objection.models.status.fromJson(req.body.data);
         await app.objection.models.status.query().insert(formData);
         req.flash('info', i18next.t('flash.statuses.create.success'));
-        reply.redirect(app.reverse('root'));
+        reply.redirect(app.reverse('statuses'));
         return reply;
       } catch ({ data }) {
         req.flash('error', i18next.t('flash.statuses.create.error'));
