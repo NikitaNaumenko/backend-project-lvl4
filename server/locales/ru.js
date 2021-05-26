@@ -12,11 +12,15 @@ module.exports = {
       status: {
         name: 'Наименование',
       },
+      label: {
+        name: 'Наименование',
+      },
       task: {
         name: 'Наименование',
         executor: 'Исполнитель',
         creator: 'Создатель',
         status: 'Статус',
+        labels: 'Метки',
       },
     },
     appName: 'Backend Project level 4',
@@ -42,6 +46,20 @@ module.exports = {
         delete: {
           success: 'Статус успешно удален',
           error: 'Не удалось удалить статус',
+        },
+      },
+      labels: {
+        create: {
+          success: 'Метка успешно создан',
+          error: 'Не удалось сохранить метку',
+        },
+        edit: {
+          success: 'Метка успешно изменен',
+          error: 'Не удалось изменить метку',
+        },
+        delete: {
+          success: 'Метка успешно удален',
+          error: 'Не удалось удалить метка',
         },
       },
       tasks: {
@@ -79,6 +97,7 @@ module.exports = {
         users: 'Пользователи',
         statuses: 'Статусы',
         tasks: 'Задачи',
+        labels: 'Метки',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
@@ -145,6 +164,24 @@ module.exports = {
         new: {
           submit: 'Сохранить',
           header: 'Создать задачу',
+        },
+      },
+      labels: {
+        id: 'ID',
+        name: 'Наименование',
+        createdAt: 'Дата создания',
+        index: {
+          new: 'Создать метку',
+          edit: 'Изменить',
+          delete: 'Удалить',
+        },
+        new: {
+          header: 'Создать метку',
+          submit: 'Сохранить',
+        },
+        edit: {
+          header: 'Редактировать метку',
+          submit: 'Сохранить',
         },
       },
       welcome: {

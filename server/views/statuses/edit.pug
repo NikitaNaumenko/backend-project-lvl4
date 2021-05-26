@@ -4,7 +4,7 @@ block header
   = t('views.statuses.edit.header')
 
 block content
-  +formFor()(action=route('statuses') method='post')
+  +formFor()(action=route('updateStatus', { id: status.id }) method='post')
     input(name="_method" type="hidden" value="patch")
     +input(status, 'name', t('entities.status.name'), errors)(type="text")
     +submit(status)(value=t('views.statuses.edit.submit'))

@@ -39,7 +39,7 @@ export default (app) => {
       try {
         const form = await app.objection.models.label.fromJson(req.body.data);
         await label.$query().patch(form);
-        req.flash('error', i18next.t('flash.labels.edit.success'));
+        req.flash('info', i18next.t('flash.labels.edit.success'));
         reply.redirect(app.reverse('labels'));
         return reply;
       } catch ({ data }) {
