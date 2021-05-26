@@ -22,7 +22,7 @@ export default (app) => {
       reply.render('tasks/new', {
         task,
         statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
-        executors: executors.map((e) => ({ value: e.id, label: e.fullName() }))
+        executors: executors.map((e) => ({ value: e.id, label: e.fullName() })),
       });
       return reply;
     })
@@ -47,7 +47,7 @@ export default (app) => {
           task: req.body.data,
           statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
           executors: executors.map((e) => ({ value: e.id, label: e.fullName() })),
-          errors: data
+          errors: data,
         });
         return reply;
       }

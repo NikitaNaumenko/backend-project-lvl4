@@ -10,14 +10,14 @@ module.exports = {
         lastName: 'Фамилия',
       },
       status: {
-        name: 'Наименование'
+        name: 'Наименование',
       },
       task: {
         name: 'Наименование',
         executor: 'Исполнитель',
         creator: 'Создатель',
-        status: 'Статус'
-      }
+        status: 'Статус',
+      },
     },
     appName: 'Backend Project level 4',
     flash: {
@@ -108,9 +108,9 @@ module.exports = {
         },
         edit: {
           header: 'Редактирование',
-          submit: 'Сохранить'
+          submit: 'Сохранить',
 
-        }
+        },
       },
       statuses: {
         id: 'ID',
@@ -123,11 +123,11 @@ module.exports = {
         },
         new: {
           header: 'Создать статус',
-          submit: 'Сохранить'
+          submit: 'Сохранить',
         },
         edit: {
           header: 'Редактировать статус',
-          submit: 'Сохранить'
+          submit: 'Сохранить',
         },
       },
       tasks: {
@@ -145,7 +145,7 @@ module.exports = {
         new: {
           submit: 'Сохранить',
           header: 'Создать задачу',
-        }
+        },
       },
       welcome: {
         index: {

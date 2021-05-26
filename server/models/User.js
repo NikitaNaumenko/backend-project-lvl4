@@ -29,7 +29,7 @@ export default class User extends unique(Model) {
   }
 
   fullName() {
-    return [this.firstName, this.lastName].join(' ')
+    return [this.firstName, this.lastName].join(' ');
   }
 
   verifyPassword(password) {
