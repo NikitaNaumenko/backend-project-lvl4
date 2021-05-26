@@ -1,0 +1,18 @@
+extends ../layouts/application.pug
+
+block content
+  a.nav-link(href=route('newLabel'))= t('views.labels.index.new')
+  table.table
+    thead
+      tr
+        th(scope="col")= t('views.labels.id')
+        th(scope="col")= t('views.labels.name')
+        th(scope="col")
+    tbody
+      each label in labels
+        tr
+          td(scope="col")= labels.id
+          td(scope="col")= label.name
+          td(scope="col")
+            a(href=route('editLabel', { id: label.id }))= t('views.labels.index.edit')
+            +buttonTo(route('deleteLabel', { id: label.id }), 'delete')(class="btn btn-link" value=t('views.labels.index.delete'))
