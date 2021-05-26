@@ -81,7 +81,7 @@ describe('test CRUD', () => {
   });
 
   it('create', async () => {
-    const taskData = factories.task({ statusId: status.id });
+    const taskData = factories.task({ statusId: status.id, executorId: currentUser.id });
     const response = await app.inject({
       method: 'POST',
       url: app.reverse('tasks'),

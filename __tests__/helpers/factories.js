@@ -10,4 +10,5 @@ export default {
     password: faker.internet.password(),
   }, { ...data })),
   task: (data = {}) => (_.merge({ name: faker.name.title() }, { ...data })),
+  label: (data = {}) => (_.merge({ name: faker.name.title() }, { ...data })),
 };

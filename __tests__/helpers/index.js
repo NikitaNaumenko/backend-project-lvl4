@@ -18,11 +18,13 @@ export const databaseHelpers = (app) => ({
     user: (data) => app.objection.models.user.query().insert(data),
     status: (data) => app.objection.models.status.query().insert(data),
     task: (data) => app.objection.models.task.query().insert(data),
+    label: (data) => app.objection.models.label.query().insert(data),
   },
   findOne: {
     user: (data) => app.objection.models.user.query().findOne(data),
     status: (data) => app.objection.models.status.query().findOne(data),
     task: (data) => app.objection.models.task.query().findOne(data),
+    label: (data) => app.objection.models.label.query().findOne(data),
   },
 });
 
