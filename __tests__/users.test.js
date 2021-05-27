@@ -158,7 +158,11 @@ describe('test users CRUD', () => {
       const status = await databaseHelpers(app).insert.status(statusData);
       const userData = factories.user();
       const creatorUser = await databaseHelpers(app).insert.user(userData);
-      const taskData = factories.task({ creatorId: creatorUser.id, statusId: status.id, executorId: user.id });
+      const taskData = factories.task({
+        creatorId: creatorUser.id,
+        statusId: status.id,
+        executorId: user.id,
+      });
       await databaseHelpers(app).insert.task(taskData);
 
       const res = await app.inject({

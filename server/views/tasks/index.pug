@@ -14,12 +14,12 @@ block content
     tbody
       each task in tasks
         tr
-          th(scope="col")= task.id
-          th(scope="col")= task.name
-          th(scope="col")= task.status.name
-          th(scope="col")= task.creator.fullName()
-          th(scope="col")= task.executor.fullName()
-          th(scope="col")
+          td(scope="col")= task.id
+          td(scope="col")= task.name
+          td(scope="col")= task.status.name
+          td(scope="col")= task.creator.fullName()
+          td(scope="col")= task.executor.fullName()
+          td(scope="col")
             a(href=route('editTask', { id: task.id }))= t('views.tasks.index.edit')
             +buttonTo(route('deleteTask', { id: task.id }), 'delete')(class="btn btn-link" value=t('views.tasks.index.delete'))
 

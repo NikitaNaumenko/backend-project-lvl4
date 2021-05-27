@@ -22,11 +22,12 @@ mixin input(entity, propertyName, label, errors = {})
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
-mixin select(entity, propertyName, label, options = [], errors = {})
+mixin select(entity, propertyName, label, collection = [], errors = {}, options = {})
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'form-control' + (_.isEmpty(errors) ? '' : ' is-invalid')
   - inputId = getInputId(propertyName)
-  - value = _.get(entity, propertyName, '')
+  - isMultiSelect = _.get(options, 'isMultiSelect')
+  - value = _.get(entity, propertyName, isMultiSelect ? [] : '')
   .form-group(class=(errors[propertyName] && 'has-danger'))
     label(
       for= inputId
@@ -35,11 +36,17 @@ mixin select(entity, propertyName, label, options = [], errors = {})
       id=inputId
       name=getInputName(propertyName)
       class=classLine
+      multiple=isMultiSelect
       )
-      option
-      each opt in options 
-        - isSelected = _.isEqual(opt.value, value)
-        option(value=opt.value selected=isSelected) #{opt.label}
+      if !isMultiSelect
+        option
+      each el in collection
+        - console.log(value)
+        - isSelected = isMultiSelect ? value.includes(el.value) : _.isEqual(el.value, value)
+        option(value=el.value selected=isSelected) #{el.label}
+    if !_.isEmpty(propertyErrors)
+      .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
+
 
 mixin submit(form = null)
   .form-group

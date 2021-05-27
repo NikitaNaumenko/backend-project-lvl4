@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   auth, factories, launchApp, shutdownApp, databaseHelpers,
 } from './helpers/index.js';
@@ -6,6 +7,7 @@ describe('test CRUD', () => {
   let app;
   let cookie;
   let status;
+  let label;
   let currentUser;
 
   beforeAll(async () => {
@@ -15,6 +17,8 @@ describe('test CRUD', () => {
     currentUser = result.user;
     const statusData = factories.status();
     status = await databaseHelpers(app).insert.status(statusData);
+    const labelData = factories.label();
+    label = await databaseHelpers(app).insert.status(labelData);
   });
 
   afterAll(async () => {
@@ -66,8 +70,11 @@ describe('test CRUD', () => {
   });
 
   it('update', async () => {
-    const taskData = factories.task({ statusId: status.id, creatorId: currentUser.id });
-    const newTaskData = factories.task();
+    const taskData = factories.task({
+      statusId: status.id,
+      creatorId: currentUser.id,
+    });
+    const newTaskData = factories.task({ statusId: status.id, executorId: currentUser.id, labelIds: [label.id] });
     const task = await databaseHelpers(app).insert.task(taskData);
 
     const res = await app.inject({
@@ -81,7 +88,12 @@ describe('test CRUD', () => {
   });
 
   it('create', async () => {
-    const taskData = factories.task({ statusId: status.id, executorId: currentUser.id });
+    const taskData = factories.task({
+      statusId: status.id,
+      executorId: currentUser.id,
+      labelIds: [label.id],
+    });
+
     const response = await app.inject({
       method: 'POST',
       url: app.reverse('tasks'),
@@ -93,7 +105,7 @@ describe('test CRUD', () => {
 
     expect(response.statusCode).toBe(302);
     const createdTask = await databaseHelpers(app).findOne.task({ name: taskData.name });
-    expect(createdTask).toMatchObject(taskData);
+    expect(createdTask).toMatchObject(_.omit(taskData, 'labelIds'));
   });
 
   it('delete', async () => {

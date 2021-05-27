@@ -11,7 +11,7 @@ block content
     tbody
       each label in labels
         tr
-          td(scope="col")= labels.id
+          td(scope="col")= label.id
           td(scope="col")= label.name
           td(scope="col")
             a(href=route('editLabel', { id: label.id }))= t('views.labels.index.edit')

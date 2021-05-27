@@ -8,5 +8,6 @@ block content
     +input(task, 'name', t('entities.task.name'), errors)(type="text")
     +select(task, 'statusId', t('entities.task.status'), statuses, errors)
     +select(task, 'executorId', t('entities.task.executor'), executors, errors)
+    +select(task, 'labelIds', t('entities.task.labels'), labels, errors, { isMultiSelect: true })
     +submit(task)(value=t('views.tasks.new.submit'))
 
