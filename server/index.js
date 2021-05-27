@@ -3,6 +3,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import fastify from 'fastify';
+import fastifyQs from 'fastify-qs';
 import fastifyStatic from 'fastify-static';
 import fastifyErrorPage from 'fastify-error-page';
 import pointOfView from 'point-of-view';
@@ -85,6 +86,7 @@ const addHooks = (app) => {
 
 const registerPlugins = (app) => {
   app.register(fastifySensible);
+  app.register(fastifyQs);
   app.register(fastifyErrorPage);
   app.register(fastifyReverseRoutes.plugin);
   app.register(fastifyFormbody, { parser: qs.parse });

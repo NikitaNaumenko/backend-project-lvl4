@@ -1,11 +1,29 @@
 import i18next from 'i18next';
 import normalizeMultiSelect from '../lib/normalizeMultiSelect.js';
 
+const selectize = (col, val, label) => col.map((item) => ({ value: item[val], label: item[label] }));
+
 export default (app) => {
   app
-    .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (_req, reply) => {
+    .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (req, reply) => {
+      const { query: { data = {} } } = req;
+      const filter = {};
+      console.log(req.user);
+
+      const [statuses, labels, executors] = await Promise.all([
+        app.objection.models.status.query(),
+        app.objection.models.label.query(),
+        app.objection.models.user.query(),
+      ]);
+
       const tasks = await app.objection.models.task.query().withGraphJoined('[creator, executor, status]');
-      reply.render('tasks/index', { tasks });
+      reply.render('tasks/index', {
+        tasks,
+        filter: {},
+        statuses: selectize(statuses, 'id', 'name'),
+        labels: selectize(labels, 'id', 'name'),
+        executors: selectize(executors.map((i) => i.toJSON()), 'id', 'fullName'),
+      });
       return reply;
     })
     .get('/tasks/:id', { name: 'task', preValidation: app.authenticate }, async (req, reply) => {

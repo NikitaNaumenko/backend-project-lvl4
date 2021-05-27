@@ -6,6 +6,10 @@ import encrypt from '../lib/secure.js';
 const unique = objectionUnique({ fields: ['email'] });
 
 export default class User extends unique(Model) {
+  static get virtualAttributes() {
+    return ['fullName'];
+  }
+
   static get tableName() {
     return 'users';
   }
