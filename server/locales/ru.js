@@ -160,6 +160,13 @@ module.exports = {
           new: 'Создать таск',
           delete: 'Удалить',
           edit: 'Изменить',
+          show: 'Показать',
+          filter: {
+            status: 'Статус',
+            executor: 'Исполнитель',
+            label: 'Метка',
+            isCreator: 'Только мои задачи',
+          },
         },
         new: {
           submit: 'Сохранить',

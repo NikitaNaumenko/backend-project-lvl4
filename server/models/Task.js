@@ -14,7 +14,12 @@ export default class Task extends Model {
         id: { type: 'integer' },
         name: { type: 'string', minLength: 1 },
         creatorId: { type: 'integer' },
-        executorId: { type: 'integer' },
+        executorId: {
+          anyOf: [
+            { type: 'integer' },
+            { type: 'null' },
+          ],
+        },
         statusId: { type: 'integer' },
       },
     };

@@ -35,6 +35,26 @@ describe('test CRUD', () => {
     expect(res.statusCode).toBe(200);
   });
 
+  it('index with filters', async () => {
+    await databaseHelpers(app).insert.task(factories.task({
+      creatorId: currentUser.id,
+      labels: [label],
+      statusId: status.id,
+    }));
+    const res = await app.inject({
+      method: 'GET',
+      url: app.reverse('tasks'),
+      cookies: cookie,
+      query: {
+        executorId: currentUser.id,
+        statusIds: status.id,
+        labelIds: label.id,
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+  });
+
   it('show', async () => {
     const taskData = factories.task({ statusId: status.id, creatorId: currentUser.id });
     const task = await databaseHelpers(app).insert.task(taskData);
@@ -74,7 +94,11 @@ describe('test CRUD', () => {
       statusId: status.id,
       creatorId: currentUser.id,
     });
-    const newTaskData = factories.task({ statusId: status.id, executorId: currentUser.id, labelIds: [label.id] });
+    const newTaskData = factories.task({
+      statusId: status.id,
+      executorId: currentUser.id,
+      labelIds: [label.id],
+    });
     const task = await databaseHelpers(app).insert.task(taskData);
 
     const res = await app.inject({

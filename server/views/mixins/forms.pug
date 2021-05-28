@@ -22,6 +22,25 @@ mixin input(entity, propertyName, label, errors = {})
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
+mixin checkbox(entity, propertyName, label, errors = {})
+  - propertyErrors = _.get(errors, propertyName)
+  - entityName = getInputName(propertyName)
+  - inputId = getInputId(propertyName)
+  - value = _.get(entity, propertyName, false)
+  .form-group.form-check
+    input(
+      id=inputId
+      name=entityName
+      class='form-check-input'
+      type='checkbox'
+      checked=value
+    )&attributes(attributes)
+    label(
+      for= inputId
+    )= label
+    if propertyErrors
+      .invalid-feedback=propertyErrors.map(({ message  }) => message).join('\n')
+
 mixin select(entity, propertyName, label, collection = [], errors = {}, options = {})
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'form-control' + (_.isEmpty(errors) ? '' : ' is-invalid')

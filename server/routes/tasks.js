@@ -1,14 +1,25 @@
 import i18next from 'i18next';
+import _ from 'lodash';
 import normalizeMultiSelect from '../lib/normalizeMultiSelect.js';
 
-const selectize = (col, val, label) => col.map((item) => ({ value: item[val], label: item[label] }));
+const selectize = (col, val, label) => col.map((item) => ({
+  value: item[val],
+  label: item[label],
+}));
 
 export default (app) => {
   app
     .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (req, reply) => {
       const { query: { data = {} } } = req;
-      const filter = {};
-      console.log(req.user);
+      const filter = _.pickBy(data);
+
+      const tasks = await app.objection.models.task.query()
+        .skipUndefined()
+        .withGraphJoined('[creator, executor, status, labels]')
+        .whereExists(app.objection.models.task.relatedQuery('labels').skipUndefined().where('labels.id', filter.labelId))
+        .where('statusId', filter.statusId)
+        .where('executorId', filter.executorId)
+        .where('creatorId', filter.isCreator ? req.user.id : undefined);
 
       const [statuses, labels, executors] = await Promise.all([
         app.objection.models.status.query(),
@@ -16,10 +27,14 @@ export default (app) => {
         app.objection.models.user.query(),
       ]);
 
-      const tasks = await app.objection.models.task.query().withGraphJoined('[creator, executor, status]');
       reply.render('tasks/index', {
         tasks,
-        filter: {},
+        filter: {
+          statusId: Number(filter.statusId),
+          executorId: Number(filter.executorId),
+          labelId: Number(filter.labelId),
+          isCreator: filter.isCreator ? 'on' : null,
+        },
         statuses: selectize(statuses, 'id', 'name'),
         labels: selectize(labels, 'id', 'name'),
         executors: selectize(executors.map((i) => i.toJSON()), 'id', 'fullName'),

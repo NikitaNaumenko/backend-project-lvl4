@@ -7,7 +7,7 @@ block content
       +select(filter, 'statusId', t('views.tasks.index.filter.status'), statuses)
       +select(filter, 'executorId', t('views.tasks.index.filter.executor'), executors)
       +select(filter, 'labelId', t('views.tasks.index.filter.label'), labels)
-      +input(filter, 'isCreator', t('views.tasks.index.filter.isCreator'))(type='checkbox')
+      +checkbox(filter, 'isCreator', t('views.tasks.index.filter.isCreator'))
       +submit(filter)(value=t('views.tasks.index.show'))
 
 
