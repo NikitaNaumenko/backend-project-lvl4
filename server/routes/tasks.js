@@ -83,7 +83,7 @@ export default (app) => {
           // await task.$relatedQuery('labels', trx).relate(labelIds);
         });
         req.flash('info', i18next.t('flash.tasks.create.success'));
-        reply.redirect(app.reverse('task', { id: task.id }));
+        reply.redirect(app.reverse('tasks'));
         return reply;
       } catch ({ data }) {
         const statuses = await app.objection.models.status.query();
