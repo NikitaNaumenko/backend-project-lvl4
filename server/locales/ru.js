@@ -159,7 +159,7 @@ module.exports = {
         creator: 'Создатель',
         executor: 'Исполнитель',
         index: {
-          new: 'Создать таск',
+          new: 'Создать задачу',
           delete: 'Удалить',
           edit: 'Изменить',
           show: 'Показать',
