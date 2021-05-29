@@ -15,11 +15,11 @@ export default (app) => {
       };
       return reply.render('sessions/new', { signInForm, errors });
     }
-    await req.logIn(user);
+    req.logIn(user);
     req.flash('success', i18next.t('flash.sessions.create.success'));
     return reply.redirect(app.reverse('root'));
   })).delete('/sessions', async (req, reply) => {
-    await req.logOut();
+    req.logOut();
     req.flash('info', i18next.t('flash.sessions.delete.success'));
     reply.redirect(app.reverse('root'));
   });
