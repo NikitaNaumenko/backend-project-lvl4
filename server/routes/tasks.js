@@ -174,9 +174,20 @@ export default (app) => {
       const { id } = req.params;
 
       try {
-        const tt = await app.objection.models.task.query().findById(id);
-        console.log(tt);
-        const task = await app.objection.models.task.query().deleteById(id);
+        // const tt = await app.objection.models.task.query().findById(id);
+        // console.log(tt);
+        // const task = await app.objection.models.task.query().deleteById(id);
+        let task;
+
+        await app.objection.models.task.transaction(async (trx) => {
+          task = await app.objection.models.task.query(trx).findById(id);
+          await task.$relatedQuery('labels', trx).unrelate();
+          await task.$query(trx).delete();
+          // NOTE: Batch insert, works only for postgres and sql server
+          // const task = await app.objection.models.task.query(trx).insert(formData);
+          // await task.$relatedQuery('labels', trx).relate(labelIds);
+        });
+
         if (req.user.id !== task.creatorId) {
           req.flash('error', i18next.t('flash.tasks.delete.error'));
           reply.redirect(app.reverse('tasks'));
