@@ -132,10 +132,9 @@ export default (app) => {
       const labelIds = normalizeMultiSelect(req.body.data.labelIds);
       const { name, description } = req.body.data;
 
-      let task;
       try {
         await app.objection.models.task.transaction(async (trx) => {
-          task = await app.objection.models.task.query(trx).upsertGraph({
+          await app.objection.models.task.query(trx).upsertGraph({
             id: Number(id),
             creatorId: req.user.id,
             statusId,
@@ -148,10 +147,10 @@ export default (app) => {
         });
 
         req.flash('info', i18next.t('flash.tasks.edit.success'));
-        reply.redirect(app.reverse('task', { id: task.id }));
+        reply.redirect(app.reverse('tasks'));
         return reply;
       } catch ({ data }) {
-        task = await app.objection.models.task.query().findById(id);
+        const task = await app.objection.models.task.query().findById(id);
         const statuses = await app.objection.models.status.query();
         const executors = await app.objection.models.user.query();
         const labels = await app.objection.models.label.query();
