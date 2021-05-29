@@ -174,7 +174,12 @@ export default (app) => {
       const { id } = req.params;
 
       try {
-        await app.objection.models.task.query().deleteById(id);
+        const task = await app.objection.models.task.query().deleteById(id);
+        if (req.user.id !== task.creatorId) {
+          req.flash('error', i18next.t('flash.tasks.delete.error'));
+          reply.redirect(app.reverse('tasks'));
+          return reply;
+        }
         req.flash('info', i18next.t('flash.tasks.delete.success'));
         reply.redirect(app.reverse('tasks'));
         return reply;

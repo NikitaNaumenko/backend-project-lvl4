@@ -7,9 +7,9 @@ exports.up = function(knex) {
     table.string('name');
     table.string('description');
 
-    table.foreign('creator_id').references('id').inTable('users').onDelete('RESTRICT');
+    table.foreign('creator_id').references('id').inTable('users');
     table.foreign('status_id').references('id').inTable('statuses');
-    table.foreign('executor_id').references('id').inTable('users').onDelete('RESTRICT');
+    table.foreign('executor_id').references('id').inTable('users')
   })
 };
 
