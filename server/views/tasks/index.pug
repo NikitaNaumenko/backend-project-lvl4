@@ -4,10 +4,10 @@ block content
   a.nav-link(href=route('newTask'))= t('views.tasks.index.new')
   .jumbotron.p-2
     +formFor()(action=route('tasks') method='get')
-      +select(filter, 'statusId', t('views.tasks.index.filter.status'), statuses)
-      +select(filter, 'executorId', t('views.tasks.index.filter.executor'), executors)
-      +select(filter, 'labelId', t('views.tasks.index.filter.label'), labels)
-      +checkbox(filter, 'isCreator', t('views.tasks.index.filter.isCreator'))
+      +select(filter, 'status', t('views.tasks.index.filter.status'), statuses)
+      +select(filter, 'executor', t('views.tasks.index.filter.executor'), executors)
+      +select(filter, 'label', t('views.tasks.index.filter.label'), labels)
+      +checkbox(filter, 'isCreatorUser', t('views.tasks.index.filter.isCreator'))
       +submit(filter)(value=t('views.tasks.index.show'))
 
 

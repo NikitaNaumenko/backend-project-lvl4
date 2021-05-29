@@ -16,10 +16,10 @@ export default (app) => {
       const tasks = await app.objection.models.task.query()
         .skipUndefined()
         .withGraphJoined('[creator, executor, status, labels]')
-        .where('statusId', filter.statusId)
-        .where('executorId', filter.executorId)
-        .where('labels.id', filter.labelId)
-        .where('creatorId', filter.isCreator ? req.user.id : undefined);
+        .where('statusId', filter.status)
+        .where('executorId', filter.executor)
+        .where('labels.id', filter.label)
+        .where('creatorId', filter.isCreatorUser ? req.user.id : undefined);
 
       console.log(tasks);
       const [statuses, labels, executors] = await Promise.all([
@@ -31,10 +31,10 @@ export default (app) => {
       reply.render('tasks/index', {
         tasks,
         filter: {
-          statusId: Number(filter.statusId),
-          executorId: Number(filter.executorId),
-          labelId: Number(filter.labelId),
-          isCreator: filter.isCreator ? 'on' : null,
+          status: Number(filter.statusId),
+          executor: Number(filter.executorId),
+          label: Number(filter.labelId),
+          isCreatorUser: filter.isCreatorUser ? 'on' : null,
         },
         statuses: selectize(statuses, 'id', 'name'),
         labels: selectize(labels, 'id', 'name'),

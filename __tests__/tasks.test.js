@@ -47,9 +47,9 @@ describe('test CRUD', () => {
       url: app.reverse('tasks'),
       cookies: cookie,
       query: {
-        executorId: currentUser.id,
-        statusId: status.id,
-        labelId: label.id,
+        executor: currentUser.id,
+        status: status.id,
+        label: label.id,
       },
     });
 
