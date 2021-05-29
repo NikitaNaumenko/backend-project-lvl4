@@ -34,7 +34,7 @@ export const auth = async (app) => {
 
   const responseSignIn = await app.inject({
     method: 'POST',
-    url: app.reverse('session'),
+    url: app.reverse('createSession'),
     body: {
       data: { email: userData.email, password: userData.password },
     },

@@ -19,7 +19,7 @@ describe('test session', () => {
 
     const responseSignOut = await app.inject({
       method: 'DELETE',
-      url: app.reverse('session'),
+      url: app.reverse('destroySession'),
       cookies: cookie,
     });
 
