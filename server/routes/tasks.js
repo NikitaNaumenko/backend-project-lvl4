@@ -64,7 +64,7 @@ export default (app) => {
     .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
       const statusId = Number(req.body.data.statusId);
       const executorId = Number(req.body.data.executorId);
-      const labelIds = normalizeMultiSelect(req.body.data.labelIds);
+      const labelIds = normalizeMultiSelect(req.body.data.labels);
 
       try {
         // TODO: Type cohersion

@@ -10,6 +10,6 @@ block content
     +textarea(task, 'description', t('entities.task.description'), errors)
     +select(task, 'statusId', t('entities.task.status'), statuses, errors)
     +select(task, 'executorId', t('entities.task.executor'), executors, errors)
-    +select(task, 'labelIds', t('entities.task.labels'), labels, errors, { isMultiSelect: true })
+    +select(task, 'labels', t('entities.task.labels'), labels, errors, { isMultiSelect: true })
     +submit(task)(value=t('views.tasks.edit.submit'))
 

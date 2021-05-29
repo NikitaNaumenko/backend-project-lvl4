@@ -97,7 +97,7 @@ describe('test CRUD', () => {
     const newTaskData = factories.task({
       statusId: status.id,
       executorId: currentUser.id,
-      labelIds: [label.id],
+      labels: [label.id],
     });
     const task = await databaseHelpers(app).insert.task(taskData);
 
@@ -115,7 +115,7 @@ describe('test CRUD', () => {
     const taskData = factories.task({
       statusId: status.id,
       executorId: currentUser.id,
-      labelIds: [label.id],
+      labels: [label.id],
     });
 
     const response = await app.inject({
@@ -129,7 +129,7 @@ describe('test CRUD', () => {
 
     expect(response.statusCode).toBe(302);
     const createdTask = await databaseHelpers(app).findOne.task({ name: taskData.name });
-    expect(createdTask).toMatchObject(_.omit(taskData, 'labelIds'));
+    expect(createdTask).toMatchObject(_.omit(taskData, 'labels'));
   });
 
   it('delete', async () => {
