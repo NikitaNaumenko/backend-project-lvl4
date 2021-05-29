@@ -60,7 +60,6 @@ mixin select(entity, propertyName, label, collection = [], errors = {}, options 
       if !isMultiSelect
         option
       each el in collection
-        - console.log(value)
         - isSelected = isMultiSelect ? value.includes(el.value) : _.isEqual(el.value, value)
         option(value=el.value selected=isSelected) #{el.label}
     if !_.isEmpty(propertyErrors)

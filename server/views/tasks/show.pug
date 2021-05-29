@@ -1,0 +1,38 @@
+extends ../layouts/application.pug
+
+block content
+  .card
+    .card-header.bg-secondary.text-white
+      h2= task.name
+    .card-body.bg-light
+      p
+        = task.description
+      hr
+      .container
+        .row.p-1
+          .col
+            = t('views.tasks.show.creator')
+          .col
+            = task.creator.fullName()
+        .row.p-1
+          .col
+            = t('views.tasks.show.executor')
+          .col
+            = task.executor.fullName()
+        .row.p-1
+          .col
+            = t('views.tasks.show.status')
+          .col
+            = task.status.name
+        .row.p-1
+          .col
+            = t('views.tasks.show.labels')
+          .col
+            = task.labels.map(({ name }) => name).join(', ')
+        .row.p-1
+          .col
+            a(href=route('editTask', { id: task.id }))= t('views.tasks.index.edit')
+            +buttonTo(route('deleteTask', { id: task.id }), 'delete')(class="btn btn-link" value=t('views.tasks.index.delete'))
+          .col
+
+

@@ -85,7 +85,7 @@ module.exports = {
           error: 'Не удалось сохранить задачу',
         },
         edit: {
-          success: 'Задача успешно изменён',
+          success: 'Задача успешно изменена',
           error: 'Не удалось изменить задачу',
         },
         delete: {
@@ -170,6 +170,12 @@ module.exports = {
             label: 'Метка',
             isCreator: 'Только мои задачи',
           },
+        },
+        show: {
+          status: 'Статус',
+          executor: 'Исполнитель',
+          creator: 'Автор',
+          labels: 'Метки',
         },
         new: {
           submit: 'Создать',

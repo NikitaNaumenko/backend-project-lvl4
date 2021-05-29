@@ -56,7 +56,11 @@ describe('test CRUD', () => {
   });
 
   it('show', async () => {
-    const taskData = factories.task({ statusId: status.id, creatorId: currentUser.id });
+    const taskData = factories.task({
+      statusId: status.id,
+      creatorId: currentUser.id,
+      executorId: currentUser.id,
+    });
     const task = await databaseHelpers(app).insert.task(taskData);
     const res = await app.inject({
       method: 'GET',
@@ -93,6 +97,7 @@ describe('test CRUD', () => {
     const taskData = factories.task({
       statusId: status.id,
       creatorId: currentUser.id,
+      executorId: currentUser.id,
     });
     const newTaskData = factories.task({
       statusId: status.id,

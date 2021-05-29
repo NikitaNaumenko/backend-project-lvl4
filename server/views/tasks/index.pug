@@ -24,7 +24,8 @@ block content
       each task in tasks
         tr
           td(scope="col")= task.id
-          td(scope="col")= task.name
+          td(scope="col")
+            a(href=route('task', { id: task.id }))= task.name
           td(scope="col")= task.status.name
           td(scope="col")= task.creator.fullName()
           td(scope="col")= task.executor.fullName()

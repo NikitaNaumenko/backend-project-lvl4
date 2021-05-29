@@ -43,8 +43,7 @@ export default (app) => {
     })
     .get('/tasks/:id', { name: 'task', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
-      const task = await app.objection.models.task.query().findById(id);
-
+      const task = await app.objection.models.task.query().withGraphJoined('[creator, executor, status, labels]').findById(id);
       reply.render('tasks/show', { task });
       return reply;
     })
@@ -67,13 +66,15 @@ export default (app) => {
       const labelIds = normalizeMultiSelect(req.body.data.labels);
 
       try {
+        let task;
         // TODO: Type cohersion
         await app.objection.models.task.transaction(async (trx) => {
-          await app.objection.models.task.query(trx).insertGraph({
+          task = await app.objection.models.task.query(trx).insertGraph({
             statusId,
             executorId,
             creatorId: req.user.id,
             name: req.body.data.name,
+            description: req.body.data.description,
             labels: labelIds.map((l) => ({ id: l })),
           },
           { relate: true });
@@ -82,7 +83,7 @@ export default (app) => {
           // await task.$relatedQuery('labels', trx).relate(labelIds);
         });
         req.flash('info', i18next.t('flash.tasks.create.success'));
-        reply.redirect(app.reverse('tasks'));
+        reply.redirect(app.reverse('task', { id: task.id }));
         return reply;
       } catch ({ data }) {
         const statuses = await app.objection.models.status.query();
@@ -90,7 +91,11 @@ export default (app) => {
         const labels = await app.objection.models.label.query();
         const task = await new app.objection.models.task();
         task.$set({
-          statusId, executorId, name: req.body.data.name, labelIds,
+          statusId,
+          executorId,
+          name: req.body.data.name,
+          labelIds,
+          description: req.body.data.description,
         });
 
         req.flash('error', i18next.t('flash.tasks.create.error'));
@@ -125,32 +130,34 @@ export default (app) => {
       const statusId = Number(req.body.data.statusId);
       const executorId = Number(req.body.data.executorId);
       const labelIds = normalizeMultiSelect(req.body.data.labelIds);
-      const { name } = req.body.data;
+      const { name, description } = req.body.data;
 
+      let task;
       try {
         await app.objection.models.task.transaction(async (trx) => {
-          await app.objection.models.task.query(trx).upsertGraph({
+          task = await app.objection.models.task.query(trx).upsertGraph({
             id: Number(id),
             creatorId: req.user.id,
             statusId,
             executorId,
             name,
+            description,
             labels: labelIds.map((l) => ({ id: l })),
           },
           { relate: true, unrelate: true, noDelete: true });
         });
 
         req.flash('info', i18next.t('flash.tasks.edit.success'));
-        reply.redirect(app.reverse('tasks'));
+        reply.redirect(app.reverse('task', { id: task.id }));
         return reply;
       } catch ({ data }) {
-        const task = await app.objection.models.task.query().findById(id);
+        task = await app.objection.models.task.query().findById(id);
         const statuses = await app.objection.models.status.query();
         const executors = await app.objection.models.user.query();
         const labels = await app.objection.models.label.query();
 
         task.$set({
-          name, statusId, executorId, labels: labelIds,
+          name, statusId, description, executorId, labels: labelIds,
         });
         req.flash('error', i18next.t('flash.tasks.edit.error'));
         req.body.data.id = id;
