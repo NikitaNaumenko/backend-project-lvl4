@@ -179,7 +179,7 @@ export default (app) => {
         reply.redirect(app.reverse('tasks'));
         return reply;
       } catch (error) {
-        console.log(error)
+        console.log(error);
         req.flash('error', i18next.t('flash.tasks.delete.error'));
         reply.redirect(app.reverse('tasks'));
         return reply;
