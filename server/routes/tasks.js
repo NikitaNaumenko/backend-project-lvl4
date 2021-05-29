@@ -116,7 +116,7 @@ export default (app) => {
       const executors = await app.objection.models.user.query();
       const labels = await app.objection.models.label.query();
 
-      task.$set({ labelIds: task.labels.map((label) => label.id) });
+      task.$set({ labels: task.labels.map((label) => label.id) });
       reply.render('tasks/edit', {
         task,
         statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
