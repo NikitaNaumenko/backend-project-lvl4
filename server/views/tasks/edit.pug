@@ -7,6 +7,7 @@ block content
   +formFor()(action=route('updateTask', { id: task.id }) method='post')
     input(name="_method" type="hidden" value="patch")
     +input(task, 'name', t('entities.task.name'), errors)(type="text")
+    +textarea(task, 'description', t('entities.task.description'), errors)
     +select(task, 'statusId', t('entities.task.status'), statuses, errors)
     +select(task, 'executorId', t('entities.task.executor'), executors, errors)
     +select(task, 'labelIds', t('entities.task.labels'), labels, errors, { isMultiSelect: true })

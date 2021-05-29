@@ -5,6 +5,7 @@ exports.up = function(knex) {
     table.integer('status_id').notNullable();
     table.integer('executor_id');
     table.string('name');
+    table.string('description');
 
     table.foreign('creator_id').references('id').inTable('users').onDelete('RESTRICT');
     table.foreign('status_id').references('id').inTable('statuses');
