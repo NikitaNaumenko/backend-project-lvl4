@@ -144,7 +144,7 @@ module.exports = {
         },
         new: {
           header: 'Создать статус',
-          submit: 'Сохранить',
+          submit: 'Создать',
         },
         edit: {
           header: 'Редактировать статус',
@@ -186,7 +186,7 @@ module.exports = {
         },
         new: {
           header: 'Создать метку',
-          submit: 'Сохранить',
+          submit: 'Создать',
         },
         edit: {
           header: 'Редактировать метку',
