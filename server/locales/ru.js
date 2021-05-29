@@ -171,7 +171,7 @@ module.exports = {
           },
         },
         new: {
-          submit: 'Сохранить',
+          submit: 'Создать',
           header: 'Создать задачу',
         },
       },
