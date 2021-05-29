@@ -5,12 +5,14 @@ block content
     thead
       tr
         th(scope="col")= t('views.users.id')
+        th(scope="col")= t('views.users.fullName')
         th(scope="col")= t('views.users.email')
         th(scope="col")
     tbody
       each user in users
         tr
           td(scope="col")= user.id
+          td(scope="col")= user.fullName()
           td(scope="col")= user.email
           td(scope="col")
             a(href=route('editUser', { id: user.id }))= t('views.users.index.edit')

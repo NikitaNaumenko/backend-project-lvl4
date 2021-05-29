@@ -118,6 +118,7 @@ module.exports = {
         id: 'ID',
         email: 'Email',
         createdAt: 'Дата создания',
+        fullName: 'Полное имя',
         password: 'Пароль',
         new: {
           submit: 'Сохранить',
