@@ -66,10 +66,9 @@ export default (app) => {
       const labelIds = normalizeMultiSelect(req.body.data.labels);
 
       try {
-        let task;
         // TODO: Type cohersion
         await app.objection.models.task.transaction(async (trx) => {
-          task = await app.objection.models.task.query(trx).insertGraph({
+          await app.objection.models.task.query(trx).insertGraph({
             statusId,
             executorId,
             creatorId: req.user.id,
