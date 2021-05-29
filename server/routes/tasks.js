@@ -21,7 +21,6 @@ export default (app) => {
         .where('labels.id', filter.label)
         .where('creatorId', filter.isCreatorUser ? req.user.id : undefined);
 
-      console.log(filter);
       const [statuses, labels, executors] = await Promise.all([
         app.objection.models.status.query(),
         app.objection.models.label.query(),
@@ -180,6 +179,7 @@ export default (app) => {
         reply.redirect(app.reverse('tasks'));
         return reply;
       } catch (error) {
+        console.log(error)
         req.flash('error', i18next.t('flash.tasks.delete.error'));
         reply.redirect(app.reverse('tasks'));
         return reply;
