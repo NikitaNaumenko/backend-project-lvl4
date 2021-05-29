@@ -19,8 +19,7 @@ export default (app) => {
         .where('statusId', filter.statusId)
         .where('executorId', filter.executorId)
         .where('creatorId', filter.isCreator ? req.user.id : undefined)
-        .where('labels.id', filter.labelId)
-        // .(app.objection.models.task.relatedQuery('labels').skipUndefined().where('labels.id', filter.labelId))
+        .where('labels.id', filter.labelId);
 
       const [statuses, labels, executors] = await Promise.all([
         app.objection.models.status.query(),
@@ -28,7 +27,7 @@ export default (app) => {
         app.objection.models.user.query(),
       ]);
 
-      console.log(filter)
+      console.log(filter);
       reply.render('tasks/index', {
         tasks,
         filter: {
