@@ -21,7 +21,7 @@ export default (app) => {
         .where('labels.id', filter.label)
         .where('creatorId', filter.isCreatorUser ? req.user.id : undefined);
 
-      console.log(tasks);
+      console.log(filter);
       const [statuses, labels, executors] = await Promise.all([
         app.objection.models.status.query(),
         app.objection.models.label.query(),
@@ -31,9 +31,9 @@ export default (app) => {
       reply.render('tasks/index', {
         tasks,
         filter: {
-          status: Number(filter.statusId),
-          executor: Number(filter.executorId),
-          label: Number(filter.labelId),
+          status: Number(filter.status),
+          executor: Number(filter.executor),
+          label: Number(filter.label),
           isCreatorUser: filter.isCreatorUser ? 'on' : null,
         },
         statuses: selectize(statuses, 'id', 'name'),
