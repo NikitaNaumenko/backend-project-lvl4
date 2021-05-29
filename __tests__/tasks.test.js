@@ -38,6 +38,7 @@ describe('test CRUD', () => {
   it('index with filters', async () => {
     await databaseHelpers(app).insert.task(factories.task({
       creatorId: currentUser.id,
+      executorId: currentUser.id,
       labels: [label],
       statusId: status.id,
     }));
@@ -47,8 +48,8 @@ describe('test CRUD', () => {
       cookies: cookie,
       query: {
         executorId: currentUser.id,
-        statusIds: status.id,
-        labelIds: label.id,
+        statusId: status.id,
+        labelId: label.id,
       },
     });
 
