@@ -39,7 +39,7 @@ export default (app) => {
       try {
         const form = await app.objection.models.status.fromJson(req.body.data);
         await status.$query().patch(form);
-        req.flash('error', i18next.t('flash.statuses.edit.success'));
+        req.flash('info', i18next.t('flash.statuses.edit.success'));
         reply.redirect(app.reverse('statuses'));
         return reply;
       } catch ({ data }) {

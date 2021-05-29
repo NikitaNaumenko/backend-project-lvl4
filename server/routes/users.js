@@ -55,7 +55,7 @@ export default (app) => {
       try {
         const patchForm = await app.objection.models.user.fromJson(req.body.data);
         await user.$query().patch(patchForm);
-        req.flash('error', i18next.t('flash.users.edit.success'));
+        req.flash('info', i18next.t('flash.users.edit.success'));
         reply.redirect(app.reverse('users'));
         return reply;
       } catch ({ data }) {

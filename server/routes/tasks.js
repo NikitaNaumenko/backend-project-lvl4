@@ -62,12 +62,12 @@ export default (app) => {
       return reply;
     })
     .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
+      const statusId = Number(req.body.data.statusId);
+      const executorId = Number(req.body.data.executorId);
+      const labelIds = normalizeMultiSelect(req.body.data.labelIds);
+
       try {
         // TODO: Type cohersion
-        const statusId = Number(req.body.data.statusId);
-        const executorId = Number(req.body.data.executorId);
-        const labelIds = normalizeMultiSelect(req.body.data.labelIds);
-
         await app.objection.models.task.transaction(async (trx) => {
           await app.objection.models.task.query(trx).insertGraph({
             statusId,
@@ -84,14 +84,18 @@ export default (app) => {
         req.flash('info', i18next.t('flash.tasks.create.success'));
         reply.redirect(app.reverse('tasks'));
         return reply;
-      } catch (data) {
+      } catch ({ data }) {
         const statuses = await app.objection.models.status.query();
         const executors = await app.objection.models.user.query();
         const labels = await app.objection.models.label.query();
+        const task = await new app.objection.models.task();
+        task.$set({
+          statusId, executorId, name: req.body.data.name, labelIds,
+        });
 
         req.flash('error', i18next.t('flash.tasks.create.error'));
         reply.render('tasks/new', {
-          task: req.body.data,
+          task,
           statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
           executors: executors.map((e) => ({ value: e.id, label: e.fullName() })),
           labels: labels.map((e) => ({ value: e.id, label: e.name })),
