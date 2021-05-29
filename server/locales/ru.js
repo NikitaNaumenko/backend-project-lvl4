@@ -148,7 +148,7 @@ module.exports = {
         },
         edit: {
           header: 'Редактировать статус',
-          submit: 'Сохранить',
+          submit: 'Изменить',
         },
       },
       tasks: {
@@ -174,6 +174,11 @@ module.exports = {
           submit: 'Создать',
           header: 'Создать задачу',
         },
+        edit: {
+          header: 'Редактировать задачу',
+          submit: 'Изменить',
+        },
+
       },
       labels: {
         id: 'ID',
@@ -190,7 +195,7 @@ module.exports = {
         },
         edit: {
           header: 'Редактировать метку',
-          submit: 'Сохранить',
+          submit: 'Изменить',
         },
       },
       welcome: {

@@ -1,7 +1,7 @@
 extends ../layouts/application.pug
 
 block header
-  = t('views.tasks.new.header')
+  = t('views.tasks.edit.header')
 
 block content
   +formFor()(action=route('updateTask', { id: task.id }) method='post')
