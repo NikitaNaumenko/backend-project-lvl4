@@ -174,6 +174,8 @@ export default (app) => {
       const { id } = req.params;
 
       try {
+        const tt = await app.objections.modeks.task.query().findById(id);
+        console.log(tt);
         const task = await app.objection.models.task.query().deleteById(id);
         if (req.user.id !== task.creatorId) {
           req.flash('error', i18next.t('flash.tasks.delete.error'));
