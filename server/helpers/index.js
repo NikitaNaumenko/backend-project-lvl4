@@ -12,8 +12,6 @@ export default (app) => ({
   i18next,
   getAlertClass(type) {
     switch (type) {
-      // case 'failure':
-      //   return 'danger';
       case 'error':
         return 'danger';
       case 'success':

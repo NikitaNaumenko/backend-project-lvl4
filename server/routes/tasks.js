@@ -43,15 +43,20 @@ export default (app) => {
     })
     .get('/tasks/:id', { name: 'task', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
-      const task = await app.objection.models.task.query().withGraphJoined('[creator, executor, status, labels]').findById(id);
+      const task = await app.objection.models.task.query()
+        .withGraphJoined('[creator, executor, status, labels]')
+        .findById(id);
+
       reply.render('tasks/show', { task });
       return reply;
     })
     .get('/tasks/new', { name: 'newTask', preValidation: app.authenticate }, async (_req, reply) => {
-      const task = await new app.objection.models.task();
-      const statuses = await app.objection.models.status.query();
-      const executors = await app.objection.models.user.query();
-      const labels = await app.objection.models.label.query();
+      const [task, statuses, executors, labels] = await Promise.all([
+        await new app.objection.models.task(),
+        await app.objection.models.status.query(),
+        await app.objection.models.user.query(),
+        await app.objection.models.label.query(),
+      ]);
       reply.render('tasks/new', {
         task,
         statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
@@ -64,45 +69,45 @@ export default (app) => {
       const statusId = Number(req.body.data.statusId);
       const executorId = Number(req.body.data.executorId);
       const labelIds = normalizeMultiSelect(req.body.data.labels);
+      const { name, description } = req.body.data;
+      const creatorId = req.user.id;
 
       try {
-        // TODO: Type cohersion
         await app.objection.models.task.transaction(async (trx) => {
           await app.objection.models.task.query(trx).insertGraph({
             statusId,
             executorId,
-            creatorId: req.user.id,
-            name: req.body.data.name,
-            description: req.body.data.description,
-            labels: labelIds.map((l) => ({ id: l })),
-          },
-          { relate: true });
-          // NOTE: Batch insert, works only for postgres and sql server
-          // const task = await app.objection.models.task.query(trx).insert(formData);
-          // await task.$relatedQuery('labels', trx).relate(labelIds);
+            creatorId,
+            name,
+            description,
+            labels: labelIds.map((id) => ({ id })),
+          }, { relate: true });
         });
         req.flash('info', i18next.t('flash.tasks.create.success'));
         reply.redirect(app.reverse('tasks'));
         return reply;
       } catch ({ data }) {
-        const statuses = await app.objection.models.status.query();
-        const executors = await app.objection.models.user.query();
-        const labels = await app.objection.models.label.query();
-        const task = await new app.objection.models.task();
+        const [statuses, executors, labels, task] = await Promise.all([
+          await app.objection.models.status.query(),
+          await app.objection.models.user.query(),
+          await app.objection.models.label.query(),
+          await new app.objection.models.task(),
+        ]);
         task.$set({
+          name,
+          description,
+          creatorId,
           statusId,
           executorId,
-          name: req.body.data.name,
           labelIds,
-          description: req.body.data.description,
         });
 
         req.flash('error', i18next.t('flash.tasks.create.error'));
         reply.render('tasks/new', {
           task,
-          statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
-          executors: executors.map((e) => ({ value: e.id, label: e.fullName() })),
-          labels: labels.map((e) => ({ value: e.id, label: e.name })),
+          statuses: selectize(statuses, 'id', 'name'),
+          labels: selectize(labels, 'id', 'name'),
+          executors: selectize(executors.map((i) => i.toJSON()), 'id', 'fullName'),
           errors: data,
         });
         return reply;
@@ -110,18 +115,21 @@ export default (app) => {
     })
     .get('/tasks/:id/edit', { name: 'editTask', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
-      const task = await app.objection.models.task.query().findById(id).withGraphJoined('[labels]');
-      const statuses = await app.objection.models.status.query();
-      const executors = await app.objection.models.user.query();
-      const labels = await app.objection.models.label.query();
+      const [task, statuses, executors, labels] = await Promise.all([
+        await app.objection.models.task.query().findById(id).withGraphJoined('[labels]'),
+        await app.objection.models.status.query(),
+        await app.objection.models.user.query(),
+        await app.objection.models.label.query(),
+      ]);
 
       task.$set({ labels: task.labels.map((label) => label.id) });
       reply.render('tasks/edit', {
         task,
-        statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
-        executors: executors.map((e) => ({ value: e.id, label: e.fullName() })),
-        labels: labels.map((e) => ({ value: e.id, label: e.name })),
+        statuses: selectize(statuses, 'id', 'name'),
+        labels: selectize(labels, 'id', 'name'),
+        executors: selectize(executors.map((i) => i.toJSON()), 'id', 'fullName'),
       });
+
       return reply;
     })
     .patch('/tasks/:id', { name: 'updateTask', preValidation: app.authenticate }, async (req, reply) => {
@@ -130,17 +138,18 @@ export default (app) => {
       const executorId = Number(req.body.data.executorId);
       const labelIds = normalizeMultiSelect(req.body.data.labelIds);
       const { name, description } = req.body.data;
+      const creatorId = req.user.id;
 
       try {
         await app.objection.models.task.transaction(async (trx) => {
           await app.objection.models.task.query(trx).upsertGraph({
             id: Number(id),
-            creatorId: req.user.id,
+            creatorId,
             statusId,
             executorId,
             name,
             description,
-            labels: labelIds.map((l) => ({ id: l })),
+            labels: labelIds.map((labelId) => ({ id: labelId })),
           },
           { relate: true, unrelate: true, noDelete: true });
         });
@@ -149,22 +158,23 @@ export default (app) => {
         reply.redirect(app.reverse('tasks'));
         return reply;
       } catch ({ data }) {
-        const task = await app.objection.models.task.query().findById(id);
-        const statuses = await app.objection.models.status.query();
-        const executors = await app.objection.models.user.query();
-        const labels = await app.objection.models.label.query();
+        const [task, statuses, executors, labels] = await Promise.all([
+          await app.objection.models.task.query().findById(id),
+          await app.objection.models.status.query(),
+          await app.objection.models.user.query(),
+          await app.objection.models.label.query(),
+        ]);
 
         task.$set({
           name, statusId, description, executorId, labels: labelIds,
         });
         req.flash('error', i18next.t('flash.tasks.edit.error'));
-        req.body.data.id = id;
+        // req.body.data.id = id;
         reply.render('tasks/edit', {
           task,
-          statuses: statuses.map((s) => ({ value: s.id, label: s.name })),
-          executors: executors.map((e) => ({ value: e.id, label: e.fullName() })),
-          labels: labels.map((e) => ({ value: e.id, label: e.name })),
-
+          statuses: selectize(statuses, 'id', 'name'),
+          labels: selectize(labels, 'id', 'name'),
+          executors: selectize(executors.map((i) => i.toJSON()), 'id', 'fullName'),
           errors: data,
         });
         return reply;
@@ -174,30 +184,23 @@ export default (app) => {
       const { id } = req.params;
 
       try {
-        // const tt = await app.objection.models.task.query().findById(id);
-        // console.log(tt);
-        // const task = await app.objection.models.task.query().deleteById(id);
-        let task;
-
-        await app.objection.models.task.transaction(async (trx) => {
-          task = await app.objection.models.task.query(trx).findById(id);
-          await task.$relatedQuery('labels', trx).unrelate();
-          await task.$query(trx).delete();
-          // NOTE: Batch insert, works only for postgres and sql server
-          // const task = await app.objection.models.task.query(trx).insert(formData);
-          // await task.$relatedQuery('labels', trx).relate(labelIds);
-        });
+        const task = await app.objection.models.task.query().findById(id);
 
         if (req.user.id !== task.creatorId) {
           req.flash('error', i18next.t('flash.tasks.delete.error'));
           reply.redirect(app.reverse('tasks'));
           return reply;
         }
+
+        await app.objection.models.task.transaction(async (trx) => {
+          await task.$relatedQuery('labels', trx).unrelate();
+          await task.$query(trx).delete();
+        });
+
         req.flash('info', i18next.t('flash.tasks.delete.success'));
         reply.redirect(app.reverse('tasks'));
         return reply;
       } catch (error) {
-        console.log(error);
         req.flash('error', i18next.t('flash.tasks.delete.error'));
         reply.redirect(app.reverse('tasks'));
         return reply;

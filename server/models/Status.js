@@ -1,4 +1,5 @@
 import { Model } from 'objection';
+import path from 'path';
 
 export default class Status extends Model {
   static get tableName() {
@@ -16,17 +17,16 @@ export default class Status extends Model {
     };
   }
 
-  // static get relationMappings() {
-  //   const Task = require('./Task.js');
-  //   return {
-  //     tasks: {
-  //       relation: Model.HasManyRelation,
-  //       modelClass: Task,
-  //       join: {
-  //         from: 'statuses.id',
-  //         to: 'tasks.statusId',
-  //       },
-  //     },
-  //   };
-  // }
+  static get relationMappings() {
+    return {
+      tasks: {
+        relation: Model.HasManyRelation,
+        modelClass: path.join(__dirname, 'Task'),
+        join: {
+          from: 'statuses.id',
+          to: 'tasks.statusId',
+        },
+      },
+    };
+  }
 }

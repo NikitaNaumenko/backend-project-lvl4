@@ -1,5 +1,4 @@
 import i18next from 'i18next';
-import UserPolicy from '../policies/user_policy.js';
 
 export default (app) => {
   app
@@ -30,9 +29,7 @@ export default (app) => {
       const { id } = req.params;
       const user = await app.objection.models.user.query().findById(id);
 
-      const policy = new UserPolicy(req.user, user);
-
-      if (policy.canEdit()) {
+      if (Number(id) === req.user.id) {
         reply.render('users/edit', { user });
         return reply;
       }
@@ -45,9 +42,7 @@ export default (app) => {
       const { id } = req.params;
       const user = await app.objection.models.user.query().findById(id);
 
-      const policy = new UserPolicy(req.user, user);
-
-      if (!policy.canUpdate()) {
+      if (Number(id) !== req.user.id) {
         req.flash('error', i18next.t('flash.users.edit.notAllowed'));
         reply.redirect(app.reverse('root'));
         return reply;
@@ -67,11 +62,8 @@ export default (app) => {
     })
     .delete('/users/:id', { name: 'deleteUser', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
-      const user = await app.objection.models.user.query().findById(id);
 
-      const policy = new UserPolicy(req.user, user);
-
-      if (!policy.canDelete()) {
+      if (Number(id) !== req.user.id) {
         req.flash('error', i18next.t('flash.users.edit.notAllowed'));
         reply.redirect(app.reverse('root'));
         return reply;
